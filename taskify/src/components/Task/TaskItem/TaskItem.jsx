@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import TaskEdit from "../TaskEdit/TaskEdit.jsx";
-
 import classNames from "classnames/bind";
+
+import TaskEdit from "../TaskEdit/TaskEdit.jsx";
 import styles from "./TaskItem.module.scss";
+import Button from "../../UI/Button/Button.jsx";
 
 const cx = classNames.bind(styles);
 
@@ -13,7 +14,7 @@ const TaskItem = ({ task, onDeleteTask, onSaveTask }) => {
 
   const handleStatusChange = () => {
     setStatus(!status);
-    task.completed = !status;
+    onSaveTask(task.id, { fieldName: "completed", value: !status });
   };
 
   return (
@@ -44,8 +45,8 @@ const TaskItem = ({ task, onDeleteTask, onSaveTask }) => {
             </span>
           </div>
           <div className={cx("actions")}>
-            <button onClick={() => setIsEditing(true)}>Edit</button>
-            <button onClick={() => onDeleteTask(task.id)}>Delete</button>
+            <Button onClick={() => setIsEditing(true)}>Edit</Button>
+            <Button onClick={() => onDeleteTask(task.id)}>Delete</Button>
           </div>
         </div>
       </div>

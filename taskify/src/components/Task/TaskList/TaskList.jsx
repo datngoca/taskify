@@ -9,10 +9,10 @@ const TaskList = ({ tasks, onDeleteTask, onSaveTask }) => {
   return (
     <>
       <div className={cx("task-list")}>
-        {tasks.length === 0 ? (
+        {tasks?.length === 0 ? (
           <p className={cx("no-tasks")}>No tasks available</p>
         ) : (
-          tasks.map((task, index) => (
+          tasks?.map((task, index) => (
             <TaskItem
               key={index}
               task={task}

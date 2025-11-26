@@ -1,6 +1,9 @@
 import { useState } from "react";
 import classNames from "classnames/bind";
+
 import styles from "./TaskInput.module.scss";
+import Button from "../../UI/Button/Button.jsx";
+import Input from "../../UI/Input/Input.jsx";
 
 const cx = classNames.bind(styles);
 
@@ -21,12 +24,14 @@ const TaskInput = ({ onAddTask }) => {
   return (
     <>
       <div className={cx("task-input")}>
-        <input
+        <Input
           onChange={(e) => setInputValue(e.target.value)}
           type="text"
           placeholder="Enter your task..."
         />
-        <button onClick={handleAddTask}>Add</button>
+        <Button className={cx("button-primary")} onClick={handleAddTask}>
+          Add
+        </Button>
       </div>
     </>
   );

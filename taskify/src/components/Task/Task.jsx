@@ -1,50 +1,92 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import classNames from "classnames/bind";
+
+import styles from "./Task.module.scss";
 import TaskInput from "./TaskInput/TaskInput.jsx";
 import TaskList from "./TaskList/TaskList.jsx";
+import TaskFilter from "./TaskFilter/TaskFilter.jsx";
+
+const cx = classNames.bind(styles);
+
+const STORAGE_KEY = "tasks";
+
+function loadTasksFromStorage() {
+  const storedTasks = localStorage.getItem(STORAGE_KEY);
+  return storedTasks ? JSON.parse(storedTasks) : [];
+}
 
 const Task = () => {
-  if (localStorage.getItem("tasks") === null) {
-    localStorage.setItem("tasks", JSON.stringify([]));
-  }
-  const taskList = localStorage.getItem("tasks")
-    ? JSON.parse(localStorage.getItem("tasks"))
-    : [];
-  const [tasks, setTasks] = useState(taskList);
+  // khởi tạo từ localStorage
+  const initial = loadTasksFromStorage();
 
-  const updateLocalStorage = (updatedTasks) => {
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-  };
+  const [tasks, setTasks] = useState(initial);
+  const [dataFilter, setDataFilter] = useState(tasks);
+
+  // persist khi items thay đổi
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    setDataFilter(tasks);
+  }, [tasks]);
+
+  // Handle delete task
   const handleDeleteTask = (idTask) => {
     const newTasks = tasks.filter((task) => task.id !== idTask);
     setTasks(newTasks);
-    updateLocalStorage(newTasks);
   };
-  const handleEditTask = (idTask, editedValue) => {
+
+  // Handle edit task
+  const handleUpdateTask = (idTask, { fieldName, value }) => {
     const newTasks = tasks.map((task) => {
       if (task.id === idTask) {
-        return { ...task, name: editedValue };
+        return { ...task, [fieldName]: value };
       }
       return task;
     });
     setTasks(newTasks);
-    updateLocalStorage(newTasks);
   };
+
+  // Handle add task
   const handleAddTask = (task) => {
-    const newTask = {
-      id: tasks.length + 1,
-      ...task,
-    };
-    setTasks([...tasks, newTask]);
-    updateLocalStorage([...tasks, newTask]);
+    setTasks((prev) => {
+      const newTask = {
+        id: tasks?.length ? tasks[tasks.length - 1].id + 1 : 1,
+        ...task,
+      };
+      console.log(newTask);
+      return [...prev, newTask];
+    });
   };
+
+  const handleFilterTasks = (filter) => {
+    switch (filter) {
+      case "Completed":
+        const completedTask = tasks.filter((task) => task.completed);
+        setDataFilter(completedTask);
+        break;
+      case "Incomplete":
+        const incompleteTasks = tasks.filter((task) => !task.completed);
+        setDataFilter(incompleteTasks);
+        break;
+      case "All":
+        setDataFilter(tasks);
+        break;
+      default:
+        throw new Error("Invalid filter option");
+    }
+  };
+
   return (
     <>
-      <TaskInput onAddTask={handleAddTask} />
-      <TaskList
-        tasks={tasks}
-        onDeleteTask={handleDeleteTask}
-        onSaveTask={handleEditTask}
-      />
+      <div className={cx("wrapper")}>
+        <TaskInput onAddTask={handleAddTask} />
+        <TaskFilter onFilterTask={handleFilterTasks} />
+        <TaskList
+          tasks={dataFilter}
+          onDeleteTask={handleDeleteTask}
+          onSaveTask={handleUpdateTask}
+          onCheckTask={handleUpdateTask}
+        />
+      </div>
     </>
   );
 };
