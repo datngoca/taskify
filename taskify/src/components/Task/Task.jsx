@@ -2,28 +2,22 @@ import { useState } from "react";
 import TaskInput from "./TaskInput/TaskInput.jsx";
 import TaskList from "./TaskList/TaskList.jsx";
 
-const taskList = [
-  {
-    id: 1,
-    name: "Task 1",
-    completed: false,
-  },
-  {
-    id: 2,
-    name: "Task 2",
-    completed: true,
-  },
-  {
-    id: 3,
-    name: "Task 3",
-    completed: false,
-  },
-];
 const Task = () => {
+  if (localStorage.getItem("tasks") === null) {
+    localStorage.setItem("tasks", JSON.stringify([]));
+  }
+  const taskList = localStorage.getItem("tasks")
+    ? JSON.parse(localStorage.getItem("tasks"))
+    : [];
   const [tasks, setTasks] = useState(taskList);
+
+  const updateLocalStorage = (updatedTasks) => {
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  };
   const handleDeleteTask = (idTask) => {
     const newTasks = tasks.filter((task) => task.id !== idTask);
     setTasks(newTasks);
+    updateLocalStorage(newTasks);
   };
   const handleEditTask = (idTask, editedValue) => {
     const newTasks = tasks.map((task) => {
@@ -32,8 +26,8 @@ const Task = () => {
       }
       return task;
     });
-    console.log(newTasks);
     setTasks(newTasks);
+    updateLocalStorage(newTasks);
   };
   const handleAddTask = (task) => {
     const newTask = {
@@ -41,6 +35,7 @@ const Task = () => {
       ...task,
     };
     setTasks([...tasks, newTask]);
+    updateLocalStorage([...tasks, newTask]);
   };
   return (
     <>
