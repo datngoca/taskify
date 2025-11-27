@@ -50,8 +50,8 @@ Dự án được chia thành 5 cấp độ (Levels) để nâng cấp dần k�
 **Mục tiêu:** Xây dựng RESTful API chuẩn mực với Java Spring Boot và kết nối với Frontend.
 
 - **Tính năng dự kiến:**
-  - [ ] Thiết kế Database Schema (Entity Relationship).
-  - [ ] Tạo API lấy danh sách Task (GET /api/tasks).
+  - [x] Thiết kế Database Schema (Entity Relationship).
+  - [x] Tạo API lấy danh sách Task (GET /api/tasks).
   - [ ] API Thêm/Sửa/Xoá Task.
   - [ ] Xử lý Exception (Lỗi) chuẩn trong Spring Boot (@ControllerAdvice).
   - [ ] Cấu hình CORS (để React gọi được API từ port khác).
