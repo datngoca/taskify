@@ -21,20 +21,19 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL bắt buộc dùng cái này mới chuẩn
     private Long id;
 
-    // 👇 KHỚP 1: Trong ảnh cột là 'name'
-    @Column(name = "name")
+    @Column(name = "task_name")
     private String name;
 
-    // 👇 KHỚP 2: Trong ảnh cột là 'description'
-    @Column(name = "description")
+
+    @Column(name = "task_description")
     private String description;
 
-    // 👇 KHỚP 3: Trong ảnh cột là 'is_completed'
+
     // Lưu ý: Java dùng camelCase (isCompleted), DB dùng snake_case (is_completed)
     @Column(name = "is_completed")
     private Boolean isCompleted;
 
-    // 👇 KHỚP 4: Trong ảnh cột là 'created_at'
+
     @CreationTimestamp // Tự động điền ngày giờ khi tạo mới
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
