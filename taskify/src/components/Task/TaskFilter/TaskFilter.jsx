@@ -14,11 +14,12 @@ const TaskFilter = ({ onFilterTask }) => {
     onFilterTask(option);
   };
   return (
-    <div className={cx("wrapper")}>
+    <div className={cx("filterGroup")}>
       {options.map((option, index) => (
         <Button
           key={index}
-          type={selectedOption === option ? "primary" : "secondary"}
+          primary={selectedOption === option}
+          secondary={selectedOption !== option}
           onClick={() => handleFilterChange(option)}
         >
           {option}
