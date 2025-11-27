@@ -77,7 +77,7 @@ const Task = () => {
 
   return (
     <>
-      <div className={cx("wrapper")}>
+      <div className={cx("container")}>
         <TaskInput onAddTask={handleAddTask} />
         <TaskFilter onFilterTask={handleFilterTasks} />
         <TaskList

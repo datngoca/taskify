@@ -1,9 +1,9 @@
+import { useState } from "react";
+
 import classNames from "classnames/bind";
 import styles from "./Header.module.scss";
-
 import images from "../../assets/img/index.jsx";
-import { use, useState } from "react";
-
+import Button from "../UI/Button/Button.jsx";
 const cx = classNames.bind(styles);
 const Header = () => {
   const [pageActive, setPageActive] = useState("Home");
@@ -19,7 +19,11 @@ const Header = () => {
         </a>
         <a href="">About</a>
       </div>
-      <div></div>
+      <div>
+        <Button type="secondary" className={cx("btn-login")}>
+          Login
+        </Button>
+      </div>
     </header>
   );
 };

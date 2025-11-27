@@ -3,15 +3,22 @@ import style from "./Input.module.scss";
 
 const cx = classNames.bind(style);
 
-const Input = ({ type, placeholder, defaultValue, onChange, className }) => {
+const Input = ({ label, error, className, ...props }) => {
   return (
-    <input
-      className={className}
-      type={type}
-      placeholder={placeholder}
-      defaultValue={defaultValue}
-      onChange={onChange}
-    />
+    <div className={cx("container", className)}>
+      {label && <label className={cx("label")}>{label}</label>}
+
+      <input
+        // Logic: Always have 'inputField'. If error exists, add 'hasError'.
+        className={cx("inputField", {
+          hasError: props.error,
+        })}
+        {...props}
+      />
+
+      {error && <span className={cx("errorMsg")}>{error}</span>}
+    </div>
   );
 };
+
 export default Input;
