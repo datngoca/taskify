@@ -8,7 +8,7 @@ import Button from "../../UI/Button/Button.jsx";
 
 const cx = classNames.bind(styles);
 
-const TaskItem = ({ task, onDeleteTask, onSaveTask }) => {
+const TaskItem = ({ task, isOverlay, onDeleteTask, onSaveTask }) => {
   const [status, setStatus] = useState(task.completed);
   const [editingTask, setEditingTask] = useState(null);
 
@@ -18,14 +18,22 @@ const TaskItem = ({ task, onDeleteTask, onSaveTask }) => {
   };
   return (
     <>
-      <div className={cx("taskItem")}>
+      <div
+        className={cx("taskItem")}
+        style={{
+          // Nếu là Overlay (cái đang bay) thì thêm bóng đổ đậm hơn, scale to lên xíu cho đẹp
+          cursor: "grabbing",
+          boxShadow: isOverlay ? "0 5px 15px rgba(0,0,0,0.25)" : undefined,
+          transform: isOverlay ? "scale(1.05)" : undefined,
+        }}
+      >
         <div className={cx("leftContent")}>
-          <input
-            onChange={handleStatusChange}
+          {/* <input
+            // onChange={handleStatusChange}
             type="checkbox"
             checked={status}
-          />
-          <span className={styles.taskText}>{task.name}</span>
+          /> */}
+          <span className={styles.taskText}>{task.title}</span>
           <span className={cx("status")}>
             {task.completed ? <FaCheck className={cx("icon")} /> : ""}
           </span>
