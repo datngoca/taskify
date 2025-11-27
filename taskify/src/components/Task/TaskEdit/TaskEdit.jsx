@@ -16,15 +16,29 @@ const TaskEdit = ({ task, onSave, onCancel }) => {
   };
 
   return (
-    <div className={cx("edit-task")}>
-      <h2>Edit Task</h2>
-      <Input
-        type="text"
-        defaultValue={task.name}
-        onChange={(e) => setEditedValue(e.target.value)}
-      />
-      <Button onClick={handleSave}>Save</Button>
-      <Button onClick={() => onCancel}>Cancel</Button>
+    <div className={cx("overlay")}>
+      {/* stopPropagation để click vào modal không bị đóng modal */}
+      <div className={cx("modal")}>
+        <h3 className={cx("title")}>Edit Task</h3>
+
+        <Input
+          type="text"
+          className={cx("input")}
+          defaultValue={editedValue}
+          onChange={(e) => setEditedValue(e.target.value)}
+          autoFocus
+          onKeyDown={(e) => e.key === "Enter" && handleSave()}
+        />
+
+        <div className={cx("buttonGroup")}>
+          <Button secondary onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button primary onClick={handleSave}>
+            Save Changes
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

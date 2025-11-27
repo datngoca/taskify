@@ -1,16 +1,23 @@
 header {
+  padding: 10px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 50px;
 
   a {
-    text-decoration: none;
+    display: inline-block;
     color: inherit;
+    height: 100%;
   }
 }
 .logo {
+  display: flex;
+  align-items: center;
+
   img {
-    height: 50px;
+    height: 50%;
+    width: auto;
   }
 }
 
@@ -18,3 +25,5 @@ header {
   display: flex;
   gap: 20px;
 }
+
+

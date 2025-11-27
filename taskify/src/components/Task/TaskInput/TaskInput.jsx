@@ -23,13 +23,13 @@ const TaskInput = ({ onAddTask }) => {
   };
   return (
     <>
-      <div className={cx("task-input")}>
+      <div className={cx("inputGroup")}>
         <Input
           onChange={(e) => setInputValue(e.target.value)}
           type="text"
           placeholder="Enter your task..."
         />
-        <Button className={cx("button-primary")} onClick={handleAddTask}>
+        <Button primary onClick={handleAddTask}>
           Add
         </Button>
       </div>

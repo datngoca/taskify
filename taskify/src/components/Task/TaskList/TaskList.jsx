@@ -8,7 +8,7 @@ const cx = classNames.bind(styles);
 const TaskList = ({ tasks, onDeleteTask, onSaveTask }) => {
   return (
     <>
-      <div className={cx("task-list")}>
+      <div className={cx("taskList")}>
         {tasks?.length === 0 ? (
           <p className={cx("no-tasks")}>No tasks available</p>
         ) : (

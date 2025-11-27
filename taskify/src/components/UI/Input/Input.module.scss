@@ -1,25 +1,46 @@
-input[type="text"],
-select {
+/* Input.module.scss */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
+  font-family: sans-serif;
 }
 
-input[type="submit"] {
-  width: 100%;
-  background-color: #4caf50;
-  color: white;
-  padding: 14px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
 }
 
-input[type="submit"]:hover {
-  background-color: #45a049;
+.inputField {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+
+  /* Specific style when error exists */
+  &.hasError {
+    border-color: #ef4444;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+  }
+}
+
+.errorMsg {
+  font-size: 0.75rem;
+  color: #ef4444;
 }
