@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaEdit, FaTrash } from "react-icons/fa";
 import classNames from "classnames/bind";
 
 import TaskEdit from "../TaskEdit/TaskEdit.jsx";
@@ -32,12 +32,20 @@ const TaskItem = ({ task, onDeleteTask, onSaveTask }) => {
         </div>
         <div className={cx("actions")}>
           {/* Nút Edit dùng style secondary */}
-          <Button secondary onClick={() => setEditingTask(task)}>
+          <Button
+            secondary
+            onClick={() => setEditingTask(task)}
+            rightIcon={<FaEdit />}
+          >
             Edit
           </Button>
 
           {/* Nút Delete dùng style danger */}
-          <Button danger onClick={() => onDeleteTask(task.id)}>
+          <Button
+            danger
+            onClick={() => onDeleteTask(task.id)}
+            rightIcon={<FaTrash />}
+          >
             Delete
           </Button>
         </div>

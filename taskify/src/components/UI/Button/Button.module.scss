@@ -1,4 +1,8 @@
 .btn {
+  display: inline-flex;
+  min-width: 100px;
+  justify-content: center;
+  align-items: center;
   padding: 10px 18px;
   border-radius: var(--radius-sm);
   border: none;
@@ -6,9 +10,16 @@
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.95rem;
-
+  user-select: none;
+  + .btn {
+    margin-left: 8px;
+  }
   &:active {
     transform: translateY(1px);
+  }
+  &.disable {
+    pointer-events: none;
+    opacity: 0.5;
   }
 }
 
@@ -54,4 +65,14 @@
   &:hover {
     background-color: #fee2e2;
   }
+}
+
+.icon + .title,
+.title + .icon {
+  margin-left: 8px;
+}
+.icon {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
 }

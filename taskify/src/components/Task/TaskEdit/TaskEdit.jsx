@@ -31,7 +31,7 @@ const TaskEdit = ({ task, onSave, onCancel }) => {
         />
 
         <div className={cx("buttonGroup")}>
-          <Button secondary onClick={onCancel}>
+          <Button secondary onClick={onCancel} >
             Cancel
           </Button>
           <Button primary onClick={handleSave}>
