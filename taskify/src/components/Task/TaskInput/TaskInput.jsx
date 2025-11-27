@@ -1,0 +1,40 @@
+import { useState } from "react";
+import classNames from "classnames/bind";
+
+import styles from "./TaskInput.module.scss";
+import Button from "../../UI/Button/Button.jsx";
+import Input from "../../UI/Input/Input.jsx";
+
+const cx = classNames.bind(styles);
+
+const TaskInput = ({ onAddTask }) => {
+  const [inputValue, setInputValue] = useState("");
+
+  const handleAddTask = () => {
+    if (inputValue.trim() !== "") {
+      const newTask = {
+        name: inputValue,
+        completed: false,
+      };
+
+      onAddTask(newTask);
+      setInputValue("");
+    }
+  };
+  return (
+    <>
+      <div className={cx("task-input")}>
+        <Input
+          onChange={(e) => setInputValue(e.target.value)}
+          type="text"
+          placeholder="Enter your task..."
+        />
+        <Button className={cx("button-primary")} onClick={handleAddTask}>
+          Add
+        </Button>
+      </div>
+    </>
+  );
+};
+
+export default TaskInput;
