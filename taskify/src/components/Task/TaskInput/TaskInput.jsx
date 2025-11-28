@@ -13,8 +13,7 @@ const TaskInput = ({ onAddTask }) => {
   const handleAddTask = () => {
     if (inputValue.trim() !== "") {
       const newTask = {
-        name: inputValue,
-        completed: false,
+        title: inputValue,
       };
 
       onAddTask(newTask);

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
@@ -21,20 +22,18 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL bắt buộc dùng cái này mới chuẩn
     private Long id;
 
-    @Column(name = "task_name")
-    private String name;
+    private String title;
 
-
-    @Column(name = "task_description")
     private String description;
 
-
-    // Lưu ý: Java dùng camelCase (isCompleted), DB dùng snake_case (is_completed)
-    @Column(name = "is_completed")
     private Boolean isCompleted;
 
+    private String status;
 
-    @CreationTimestamp // Tự động điền ngày giờ khi tạo mới
-    @Column(name = "created_at", updatable = false)
+    @CreationTimestamp
+    @Column(updatable = false)
     private Date createdAt;
+
+    @UpdateTimestamp
+    private Date updatedAt;
 }

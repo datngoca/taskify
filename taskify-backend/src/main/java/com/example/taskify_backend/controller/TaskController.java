@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/task")
+@CrossOrigin(origins = "http://localhost:5173")
 public class TaskController {
     private final TaskService taskService;
 
@@ -22,7 +23,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public Task findTaskById(@PathVariable Integer id ) {
+    public Task findTaskById(@PathVariable Integer id) {
         return taskService.getTaskById(id);
     }
 
@@ -35,10 +36,10 @@ public class TaskController {
     public Task addTask(@RequestBody AddTaskRequest task) {
         return taskService.addTask(task);
     }
+
     @PutMapping("/{id}")
     public Task updateTask(@RequestBody AddTaskRequest task, @PathVariable Integer id) {
-        return taskService.updateTaskById(id,task);
+        return taskService.updateTaskById(id, task);
     }
-
 
 }

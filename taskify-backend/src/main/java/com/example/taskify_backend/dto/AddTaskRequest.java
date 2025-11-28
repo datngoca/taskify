@@ -5,11 +5,9 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+
 public class AddTaskRequest {
-
-    private String taskName;
-    private String taskDescription;
-
+    private String title;
+    private String description;
+    private String status;
 }
