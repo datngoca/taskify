@@ -52,7 +52,7 @@ Dự án được chia thành 5 cấp độ (Levels) để nâng cấp dần k�
 - **Tính năng dự kiến:**
   - [x] Thiết kế Database Schema (Entity Relationship).
   - [x] Tạo API lấy danh sách Task (GET /api/tasks).
-  - [ ] API Thêm/Sửa/Xoá Task.
+  - [x] API Thêm/Sửa/Xoá Task.
   - [ ] Xử lý Exception (Lỗi) chuẩn trong Spring Boot (@ControllerAdvice).
   - [ ] Cấu hình CORS (để React gọi được API từ port khác).
 - **Kỹ thuật mới (Java ecosystem):**
