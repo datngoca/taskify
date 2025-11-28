@@ -1,0 +1,25 @@
+.column {
+  background-color: #f3f4f6; /* Nền cột hơi xám để phân biệt */
+  border-radius: var(--radius-md);
+  padding: 16px;
+  min-height: 500px;
+}
+.columnTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  justify-content: space-between;
+
+  /* Đếm số lượng task (Badge) */
+  span {
+    background: #e5e7eb;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: var(--text-main);
+  }
+}

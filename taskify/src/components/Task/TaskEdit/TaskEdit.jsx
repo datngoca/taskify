@@ -11,7 +11,7 @@ const TaskEdit = ({ task, onSave, onCancel }) => {
   const [editedValue, setEditedValue] = useState(task.name);
 
   const handleSave = () => {
-    onSave(task.id, { fieldName: "name", value: editedValue });
+    onSave(task.id, { fieldName: "title", value: editedValue });
     onCancel();
   };
 
