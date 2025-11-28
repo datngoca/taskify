@@ -25,22 +25,29 @@ public class TaskService {
         return taskRepo.findAll();
     }
 
-
     public void deleteTaskById(Integer id) {
+        if (!taskRepo.existsById(id))
+            throw new NotFoundTaskException("Task id " + id + " not found");
         taskRepo.deleteById(id);
     }
 
     public Task updateTaskById(Integer id, AddTaskRequest task) {
-        Task taskToUpdate = taskRepo.findById(id).orElseThrow(() -> new NotFoundTaskException("Task id " + id + " not found"));
-        taskToUpdate.setName(task.getTaskName());
-        taskToUpdate.setDescription(task.getTaskDescription());
+        Task taskToUpdate = taskRepo.findById(id)
+                .orElseThrow(() -> new NotFoundTaskException("Task id " + id + " not found"));
+        if (task.getTitle() != null)
+            taskToUpdate.setTitle(task.getTitle());
+        if (task.getDescription() != null)
+            taskToUpdate.setDescription(task.getDescription());
         return taskRepo.save(taskToUpdate);
     }
 
     public Task addTask(AddTaskRequest task) {
         Task taskToAdd = new Task();
-        taskToAdd.setName(task.getTaskName());
-        taskToAdd.setDescription(task.getTaskDescription());
+        if (task.getTitle() != null)
+            taskToAdd.setTitle(task.getTitle());
+        if (task.getDescription() != null)
+            taskToAdd.setDescription(task.getDescription());
+        taskToAdd.setStatus("todo");
         return taskRepo.save(taskToAdd);
     }
 }

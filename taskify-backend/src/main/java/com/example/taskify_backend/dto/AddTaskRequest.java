@@ -7,8 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 
 public class AddTaskRequest {
-
-    private String taskName;
-    private String taskDescription;
-
+    private String title;
+    private String description;
+    private String status;
 }

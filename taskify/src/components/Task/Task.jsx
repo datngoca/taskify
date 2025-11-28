@@ -9,6 +9,8 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 
+import { taskService } from "../../services/api.jsx";
+
 import styles from "./Task.module.scss";
 import TaskInput from "./TaskInput/TaskInput.jsx";
 import TaskItem from "./TaskItem/TaskItem.jsx";
@@ -16,57 +18,66 @@ import ColumnTasks from "./ColumnTasks/ColumnTasks.jsx";
 
 const cx = classNames.bind(styles);
 
-const STORAGE_KEY = "tasks";
-
-function loadTasksFromStorage() {
-  const storedTasks = localStorage.getItem(STORAGE_KEY);
-  return storedTasks ? JSON.parse(storedTasks) : [];
-}
-// Dữ liệu mới cho Level 2
-const initialTasks = [
-  { id: 1, title: "Học React", status: "todo" },
-  { id: 2, title: "Làm bài tập", status: "doing" },
-  { id: 3, title: "Ngủ", status: "done" },
-];
-
 const Task = () => {
-  // khởi tạo từ localStorage
-  const initial = loadTasksFromStorage();
-
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState([]);
   const [activeId, setActiveId] = useState(null);
-  // persist khi items thay đổi
+
   useEffect(() => {
-    // localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-  }, [tasks]);
+    fetchTasks();
+  }, []);
 
-  // Handle delete task
-  const handleDeleteTask = (idTask) => {
-    const newTasks = tasks.filter((task) => task.id !== idTask);
-    setTasks(newTasks);
-  };
-
-  // Handle edit task
-  const handleUpdateTask = (idTask, { fieldName, value }) => {
-    const newTasks = tasks.map((task) => {
-      if (task.id === idTask) {
-        return { ...task, [fieldName]: value };
-      }
-      return task;
-    });
-    setTasks(newTasks);
+  const fetchTasks = async () => {
+    try {
+      const data = await taskService.getAll();
+      setTasks(data);
+    } catch (error) {
+      console.error("Lỗi tải dữ liệu:", error);
+    }
   };
 
   // Handle add task
-  const handleAddTask = (task) => {
-    setTasks((prev) => {
-      const newTask = {
-        id: tasks?.length ? tasks[tasks.length - 1].id + 1 : 1,
-        ...task,
-      };
-      console.log(newTask);
-      return [...prev, newTask];
-    });
+  const handleAddTask = async (task) => {
+    const title = task.title || "";
+    if (!title.trim()) alert("Tiêu đề không được để trống!");
+    try {
+      // Gọi API tạo task
+      const newTask = await taskService.create(title);
+      // Backend trả về task mới (có ID thật từ DB), thêm vào State
+      setTasks([...tasks, newTask]);
+    } catch (error) {
+      alert("Không thể thêm task!");
+    }
+  };
+
+  // Handle delete task
+  const handleDeleteTask = async (id) => {
+    if (window.confirm("Bạn chắc chắn muốn xóa?")) {
+      try {
+        await taskService.delete(id);
+        // Xóa thành công trên Server thì mới xóa ở Frontend
+        setTasks(tasks.filter((t) => t.id !== id));
+      } catch (error) {
+        alert("Lỗi khi xóa!");
+      }
+    }
+  };
+
+  // Handle edit task
+  const handleUpdateTask = async (id, { fieldName, value }) => {
+    try {
+      // Tìm task cũ để lấy status hiện tại (vì API yêu cầu gửi cả cục object)
+      const oldTask = tasks.find((t) => t.id === id);
+
+      const updatedTask = await taskService.update(id, {
+        ...oldTask,
+        [fieldName]: value,
+      });
+
+      setTasks(tasks.map((t) => (t.id === id ? updatedTask : t)));
+      setEditingTask(null); // Đóng modal
+    } catch (error) {
+      alert("Lỗi cập nhật!");
+    }
   };
 
   // Định nghĩa danh sách các cột
@@ -86,7 +97,7 @@ const Task = () => {
     setActiveId(event.active.id); // <--- Lưu ID lại ngay lập tức
   };
   // --- HÀM 2: KHI THẢ RA ---
-  const handleDragEnd = (event) => {
+  const handleDragEnd = async (event) => {
     setActiveId(null); // Reset trạng thái
     const { active, over } = event;
     if (!over) return;
@@ -114,9 +125,23 @@ const Task = () => {
 
     // Cập nhật State
     if (activeTask.status !== newStatus) {
-      setTasks((prev) =>
-        prev.map((t) => (t.id === activeId ? { ...t, status: newStatus } : t))
+      // 1. Cập nhật UI ngay lập tức (Optimistic Update) để mượt mà
+      const updatedTasks = tasks.map((t) =>
+        t.id === activeId ? { ...t, status: newStatus } : t
       );
+      setTasks(updatedTasks);
+
+      // 2. Gọi API để lưu xuống DB (Chạy ngầm)
+      try {
+        await taskService.update(activeId, {
+          ...activeTask,
+          status: newStatus, // Gửi status mới lên
+        });
+      } catch (error) {
+        // Nếu lỗi thì revert (hoàn tác) lại UI (Optional)
+        console.error("Lỗi lưu vị trí kéo thả");
+        fetchTasks(); // Load lại dữ liệu cũ
+      }
     }
   };
 
