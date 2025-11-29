@@ -1,4 +1,4 @@
-package com.example.taskify_backend.dto;
+package com.example.taskify_backend.dto.request;
 
 import lombok.*;
 
