@@ -1,6 +1,7 @@
 package com.example.taskify_backend.controller;
 
 import com.example.taskify_backend.dto.request.AddTaskRequest;
+import com.example.taskify_backend.dto.response.ApiResponse;
 import com.example.taskify_backend.entity.Task;
 import com.example.taskify_backend.service.TaskService;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,11 @@ public class TaskController {
 
     @GetMapping
     public ApiResponse<List<Task>> findAll() {
-        return taskService.getAllTasks();
+        return ApiResponse.<List<Task>>builder()
+                .code(200)
+                .message("Get All Tasks Success")
+                .result(taskService.getAllTasks())
+                .build();
     }
 
     @GetMapping("/{id}")
