@@ -78,6 +78,7 @@ public class TaskService {
     }
 
     public Task addTask(AddTaskRequest task) {
+
         Task taskToAdd = new Task();
         User currentUser = getCurrentUser();
         taskToAdd.setUser(currentUser);
