@@ -23,7 +23,7 @@ public class TaskController {
         return ApiResponse.<List<Task>>builder()
                 .code(200)
                 .message("Get All Tasks Success")
-                .result(taskService.getAllTasks())
+                .result(taskService.getAllUserTasks())
                 .build();
     }
 

@@ -5,12 +5,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NotFoundTaskException extends RuntimeException{
+public class NotFoundTaskException extends RuntimeException {
 
     private ErrorCode errorCode;
 
     public NotFoundTaskException(ErrorCode errorCode) {
         super(errorCode.getMessage());
+        this.errorCode = errorCode;
     }
 
 }

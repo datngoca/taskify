@@ -38,24 +38,24 @@ public class TaskService {
                 .orElseThrow(() -> new NotFoundTaskException(ErrorCode.PERMISSION_DENIED));
     }
 
-    public Task getTaskById(Integer id) {
+    public Task getTaskById(int id) {
         User currentUser = getCurrentUser();
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundTaskException(ErrorCode.TASK_NOT_FOUND));
-
-        if (task.getUser().getId() != currentUser.getId()) {
+        // KIỂM TRA QUYỀN SỞ HỮU (Chống IDOR)
+        if (!task.getUser().getId().equals(currentUser.getId())) {
             throw new NotFoundTaskException(ErrorCode.PERMISSION_DENIED);
         }
 
         return task;
     }
 
-    public List<Task> getAllTasks() {
+    public List<Task> getAllUserTasks() {
         User currentUser = getCurrentUser();
         return taskRepository.findByUserId(currentUser.getId());
     }
 
-    public void deleteTaskById(Integer id) {
+    public void deleteTaskById(int id) {
         User currentUser = getCurrentUser();
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundTaskException(ErrorCode.TASK_NOT_FOUND));
@@ -65,7 +65,7 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
-    public Task updateTaskById(Integer id, AddTaskRequest task) {
+    public Task updateTaskById(int id, AddTaskRequest task) {
         User currentUser = getCurrentUser();
         Task taskToUpdate = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundTaskException(ErrorCode.TASK_NOT_FOUND));
@@ -77,6 +77,7 @@ public class TaskService {
             taskToUpdate.setTitle(task.getTitle());
         if (task.getDescription() != null)
             taskToUpdate.setDescription(task.getDescription());
+        taskToUpdate.setUser(currentUser);
         return taskRepository.save(taskToUpdate);
     }
 
@@ -89,6 +90,7 @@ public class TaskService {
         if (task.getDescription() != null)
             taskToAdd.setDescription(task.getDescription());
         taskToAdd.setStatus("todo");
+        taskToAdd.setUser(currentUser);
         return taskRepository.save(taskToAdd);
     }
 }
