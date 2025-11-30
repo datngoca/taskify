@@ -1,53 +1,91 @@
 package com.example.taskify_backend.service;
 
-import com.example.taskify_backend.dto.AddTaskRequest;
+import com.example.taskify_backend.dto.request.AddTaskRequest;
 import com.example.taskify_backend.entity.Task;
+import com.example.taskify_backend.entity.User;
 import com.example.taskify_backend.exception.NotFoundTaskException;
-import com.example.taskify_backend.repository.TaskRepo;
+import com.example.taskify_backend.repository.TaskRepository;
+import com.example.taskify_backend.repository.UserRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
 public class TaskService {
+    @Autowired
+    private final TaskRepository taskRepository;
+    @Autowired
+    private final UserRepository userRepository;
 
-    private final TaskRepo taskRepo;
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
+        this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
+    }
 
-    public TaskService(TaskRepo taskRepo) {
-        this.taskRepo = taskRepo;
+    // --- HÀM PHỤ TRỢ: Lấy User đang đăng nhập ---
+    private User getCurrentUser() {
+        // Lấy username từ "Token" trong SecurityContext
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        // Tìm User trong DB
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
     public Task getTaskById(Integer id) {
-        return taskRepo.findById(id).orElseThrow(() -> new NotFoundTaskException("Task with id " + id + " not found"));
+        User currentUser = getCurrentUser();
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new NotFoundTaskException("Task with id " + id + " not found"));
     }
 
     public List<Task> getAllTasks() {
-        return taskRepo.findAll();
+        User currentUser = getCurrentUser();
+        return taskRepository.findByUserId(currentUser.getId());
     }
 
     public void deleteTaskById(Integer id) {
-        if (!taskRepo.existsById(id))
-            throw new NotFoundTaskException("Task id " + id + " not found");
-        taskRepo.deleteById(id);
+        User currentUser = getCurrentUser();
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
+
+        if (!task.getUser().getId().equals(currentUser.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to delete this task");
+        }
+        taskRepository.delete(task);
     }
 
     public Task updateTaskById(Integer id, AddTaskRequest task) {
-        Task taskToUpdate = taskRepo.findById(id)
+        User currentUser = getCurrentUser();
+        Task taskToUpdate = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundTaskException("Task id " + id + " not found"));
+        // KIỂM TRA QUYỀN SỞ HỮU (Chống IDOR)
+        if (!taskToUpdate.getUser().getId().equals(currentUser.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to edit this task");
+        }
         if (task.getTitle() != null)
             taskToUpdate.setTitle(task.getTitle());
         if (task.getDescription() != null)
             taskToUpdate.setDescription(task.getDescription());
-        return taskRepo.save(taskToUpdate);
+        return taskRepository.save(taskToUpdate);
     }
 
     public Task addTask(AddTaskRequest task) {
         Task taskToAdd = new Task();
+        User currentUser = getCurrentUser();
+        taskToAdd.setUser(currentUser);
         if (task.getTitle() != null)
             taskToAdd.setTitle(task.getTitle());
         if (task.getDescription() != null)
             taskToAdd.setDescription(task.getDescription());
         taskToAdd.setStatus("todo");
-        return taskRepo.save(taskToAdd);
+        return taskRepository.save(taskToAdd);
     }
 }
