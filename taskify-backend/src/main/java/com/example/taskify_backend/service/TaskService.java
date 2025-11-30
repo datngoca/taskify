@@ -1,8 +1,10 @@
 package com.example.taskify_backend.service;
 
 import com.example.taskify_backend.dto.request.AddTaskRequest;
+import com.example.taskify_backend.dto.response.ApiResponse;
 import com.example.taskify_backend.entity.Task;
 import com.example.taskify_backend.entity.User;
+import com.example.taskify_backend.exception.ErrorCode;
 import com.example.taskify_backend.exception.NotFoundTaskException;
 import com.example.taskify_backend.repository.TaskRepository;
 import com.example.taskify_backend.repository.UserRepository;
@@ -39,15 +41,27 @@ public class TaskService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
-    public Task getTaskById(Integer id) {
+    public ApiResponse<Task> getTaskById(Integer id) {
         User currentUser = getCurrentUser();
-        return taskRepository.findById(id)
-                .orElseThrow(() -> new NotFoundTaskException("Task with id " + id + " not found"));
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new NotFoundTaskException(ErrorCode.TASK_NOT_FOUND));
+
+        if (task.getUser().getId() != currentUser.getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to access this task");
+        }
+
+        return ApiResponse.<Task>builder()
+                .code(200)
+                .message("Get Task by id: " + id + " Success")
+                .result(task)
+                .build();
     }
 
     public List<Task> getAllTasks() {
         User currentUser = getCurrentUser();
-        return taskRepository.findByUserId(currentUser.getId());
+        return
+
+        taskRepository.findByUserId(currentUser.getId());
     }
 
     public void deleteTaskById(Integer id) {
@@ -65,7 +79,7 @@ public class TaskService {
     public Task updateTaskById(Integer id, AddTaskRequest task) {
         User currentUser = getCurrentUser();
         Task taskToUpdate = taskRepository.findById(id)
-                .orElseThrow(() -> new NotFoundTaskException("Task id " + id + " not found"));
+                .orElseThrow(() -> new NotFoundTaskException(ErrorCode.TASK_NOT_FOUND));
         // KIỂM TRA QUYỀN SỞ HỮU (Chống IDOR)
         if (!taskToUpdate.getUser().getId().equals(currentUser.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to edit this task");
