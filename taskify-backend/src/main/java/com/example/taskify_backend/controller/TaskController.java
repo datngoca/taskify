@@ -18,12 +18,12 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> findAll() {
+    public ApiResponse<List<Task>> findAll() {
         return taskService.getAllTasks();
     }
 
     @GetMapping("/{id}")
-    public Task findTaskById(@PathVariable Integer id) {
+    public ApiResponse<Task> findTaskById(@PathVariable Integer id) {
         return taskService.getTaskById(id);
     }
 

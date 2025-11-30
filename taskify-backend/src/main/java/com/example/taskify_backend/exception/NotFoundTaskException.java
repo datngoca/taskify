@@ -1,11 +1,16 @@
 package com.example.taskify_backend.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import lombok.Getter;
+import lombok.Setter;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
+@Getter
+@Setter
 public class NotFoundTaskException extends RuntimeException{
-    public NotFoundTaskException(String message) {
-        super(message);
+
+    private ErrorCode errorCode;
+
+    public NotFoundTaskException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
     }
+
 }
