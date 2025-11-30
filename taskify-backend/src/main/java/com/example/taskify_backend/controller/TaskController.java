@@ -3,6 +3,7 @@ import com.example.taskify_backend.dto.request.AddTaskRequest;
 import com.example.taskify_backend.dto.response.ApiResponse;
 import com.example.taskify_backend.entity.Task;
 import com.example.taskify_backend.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,8 +46,9 @@ public class TaskController {
                 .build();
     }
 
+
     @PostMapping
-    public ApiResponse<Task> addTask(@RequestBody AddTaskRequest task) {
+    public ApiResponse<Task> addTask(@RequestBody @Valid AddTaskRequest task) {
         return ApiResponse.<Task>builder()
                 .code(201)
                 .message("Add Task Success")
@@ -55,7 +57,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<Task> updateTask(@RequestBody AddTaskRequest task, @PathVariable Integer id) {
+    public ApiResponse<Task> updateTask(@RequestBody @Valid AddTaskRequest task, @PathVariable Integer id) {
         return ApiResponse.<Task>builder()
                 .code(200)
                 .message("Update Task by id: " + id + " Success")
