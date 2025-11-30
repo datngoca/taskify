@@ -41,8 +41,14 @@ public class TaskService {
 
     public Task getTaskById(Integer id) {
         User currentUser = getCurrentUser();
-        return taskRepository.findById(id)
+        Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundTaskException("Task with id " + id + " not found"));
+
+        if (task.getUser().getId() != currentUser.getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to access this task");
+
+        }
+        return task;
     }
 
     public List<Task> getAllTasks() {
