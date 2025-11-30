@@ -1,5 +1,4 @@
 package com.example.taskify_backend.controller;
-
 import com.example.taskify_backend.dto.request.AddTaskRequest;
 import com.example.taskify_backend.dto.response.ApiResponse;
 import com.example.taskify_backend.entity.Task;
@@ -29,7 +28,11 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public ApiResponse<Task> findTaskById(@PathVariable Integer id) {
-        return taskService.getTaskById(id);
+        return ApiResponse.<Task>builder()
+                .code(200)
+                .message("Get Task by id: " + id + " Success")
+                .result(taskService.getTaskById(id))
+                .build();
     }
 
     @DeleteMapping("/delete/{id}")

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalHandleException  {
     @ExceptionHandler(value = RuntimeException.class)
-    public ResponseEntity<ApiResponse> handleRunTimeException(RuntimeException ex){
-        ApiResponse apiResponse = new ApiResponse();
+    public ResponseEntity<ApiResponse<Void>> handleRunTimeException(RuntimeException ex){
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
 
         apiResponse.setCode(1001);
         apiResponse.setMessage(ex.getMessage());
@@ -19,11 +19,11 @@ public class GlobalHandleException  {
     }
 
     @ExceptionHandler(value=NotFoundTaskException.class)
-    public ResponseEntity<ApiResponse> handleNotFoundTaskException(NotFoundTaskException e) {
+    public ResponseEntity<ApiResponse<Void>> handleNotFoundTaskException(NotFoundTaskException e) {
         ErrorCode errorCode = e.getErrorCode();
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(errorCode.getMessage());
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+            apiResponse.setCode(errorCode.getCode());
+            apiResponse.setMessage(errorCode.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
 

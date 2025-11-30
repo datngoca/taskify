@@ -11,6 +11,7 @@ public class NotFoundTaskException extends RuntimeException{
 
     public NotFoundTaskException(ErrorCode errorCode) {
         super(errorCode.getMessage());
+        this.errorCode = errorCode;
     }
 
 }
