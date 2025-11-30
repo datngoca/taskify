@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.lang.NonNull;
 
 import com.example.taskify_backend.security.UserDetailsServiceImpl;
 
@@ -26,7 +27,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     // HÀM CHÍNH: CHẠY MỖI KHI CÓ REQUEST
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         try {
             // 1. Lấy token từ Header (bỏ chữ 'Bearer ')

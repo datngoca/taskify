@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NotFoundTaskException extends RuntimeException{
+public class NotFoundTaskException extends RuntimeException {
 
     private ErrorCode errorCode;
 
