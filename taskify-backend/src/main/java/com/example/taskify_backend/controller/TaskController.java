@@ -23,28 +23,44 @@ public class TaskController {
         return ApiResponse.<List<Task>>builder()
                 .code(200)
                 .message("Get All Tasks Success")
-                .result(taskService.getAllTasks())
+                .result(taskService.getAllUserTasks())
                 .build();
     }
 
     @GetMapping("/{id}")
     public ApiResponse<Task> findTaskById(@PathVariable Integer id) {
-        return taskService.getTaskById(id);
+        return ApiResponse.<Task>builder()
+                .code(200)
+                .message("Get Task by id: " + id + " Success")
+                .result(taskService.getTaskById(id))
+                .build();
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteTaskById(@PathVariable Integer id) {
+    public ApiResponse<String> deleteTaskById(@PathVariable Integer id) {
         taskService.deleteTaskById(id);
+        return ApiResponse.<String>builder()
+                .code(200)
+                .message("Delete Task by id: " + id + " Success")
+                .result("Delete Success")
+                .build();
     }
 
     @PostMapping
-    public Task addTask(@RequestBody AddTaskRequest task) {
-        return taskService.addTask(task);
+    public ApiResponse<Task> addTask(@RequestBody AddTaskRequest task) {
+        return ApiResponse.<Task>builder()
+                .code(201)
+                .message("Add Task Success")
+                .result(taskService.addTask(task))
+                .build();
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@RequestBody AddTaskRequest task, @PathVariable Integer id) {
-        return taskService.updateTaskById(id, task);
+    public ApiResponse<Task> updateTask(@RequestBody AddTaskRequest task, @PathVariable Integer id) {
+        return ApiResponse.<Task>builder()
+                .code(200)
+                .message("Update Task by id: " + id + " Success")
+                .result(taskService.updateTaskById(id, task))
+                .build();
     }
-
 }
