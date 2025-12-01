@@ -7,5 +7,7 @@ import lombok.Setter;
 @Setter
 public class SigninRequest {
     private String username;
+    @NotBlank(message = "NOT_BLANK")
+    @Size(min = 8, message = "INVALID_PASSWORD")
     private String password;
 }

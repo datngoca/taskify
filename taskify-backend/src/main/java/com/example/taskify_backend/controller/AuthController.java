@@ -25,6 +25,7 @@ public class AuthController {
     }
 
     // 1. ĐĂNG KÝ
+
     @PostMapping("/signup")
     public ApiResponse<String> registerUser(@RequestBody SignupRequest signUpRequest) {
         String jwtResponse = authenticationService.register(signUpRequest);
@@ -37,6 +38,7 @@ public class AuthController {
     }
 
     // 2. ĐĂNG NHẬP
+
     @PostMapping("/signin")
     public ApiResponse<JwtResponse> authenticateUser(@RequestBody SigninRequest loginRequest) {
 
