@@ -1,11 +1,13 @@
 import { useState } from "react";
 
+import { useAuth } from "../../hooks/useAuth.jsx";
 import classNames from "classnames/bind";
 import styles from "./Header.module.scss";
 import images from "../../assets/img/index.jsx";
 import Button from "../UI/Button/Button.jsx";
 const cx = classNames.bind(styles);
 const Header = () => {
+  const { logout, isAuthenticated } = useAuth();
   const [pageActive, setPageActive] = useState("Home");
 
   return (
@@ -19,11 +21,17 @@ const Header = () => {
         </a>
         <a href="">About</a>
       </div>
-      <div>
-        <Button type="secondary" className={cx("btn-login")}>
-          Login
+      {isAuthenticated ? (
+        <Button type="secondary" className={cx("btn-login")} onClick={logout}>
+          Logout
         </Button>
-      </div>
+      ) : (
+        <div>
+          <Button type="secondary" className={cx("btn-login")}>
+            Login
+          </Button>
+        </div>
+      )}
     </header>
   );
 };
