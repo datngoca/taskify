@@ -1,11 +1,15 @@
 package com.example.taskify_backend.controller;
 
+import com.example.taskify_backend.dto.response.ApiResponse;
 import com.example.taskify_backend.entity.User;
 import com.example.taskify_backend.dto.request.LoginRequest;
 import com.example.taskify_backend.dto.request.SignupRequest;
 import com.example.taskify_backend.dto.response.JwtResponse;
+import com.example.taskify_backend.exception.AlreadyExistUserException;
+import com.example.taskify_backend.exception.ErrorCode;
 import com.example.taskify_backend.repository.UserRepository;
 import com.example.taskify_backend.security.jwt.JwtUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,25 +37,29 @@ public class AuthController {
     JwtUtils jwtUtils;
 
     // 1. ĐĂNG KÝ
+
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
+    public ApiResponse<?> registerUser(@RequestBody @Valid SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body("Error: Username is already taken!");
+            throw new AlreadyExistUserException(ErrorCode.USER_EXISTED);
         }
 
         // Tạo user mới (Mã hoá password)
-        User user = new User(signUpRequest.getUsername(),
+        User user = new User(
+                signUpRequest.getUsername(),
                 encoder.encode(signUpRequest.getPassword()),
-                "USER");
+                "USER"
+        );
 
         userRepository.save(user);
 
-        return ResponseEntity.ok("User registered successfully!");
+        return ApiResponse.builder().code(200).message("User registered successfully!").build();
     }
 
     // 2. ĐĂNG NHẬP
+
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ApiResponse<?> authenticateUser(@RequestBody @Valid LoginRequest loginRequest) {
 
         // Xác thực username/password
         Authentication authentication = authenticationManager.authenticate(
@@ -64,6 +72,6 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         // Trả về token cho người dùng
-        return ResponseEntity.ok(new JwtResponse(jwt, loginRequest.getUsername()));
+        return ApiResponse.builder().code(200).message("User signed up successfully !").result(new JwtResponse(jwt, loginRequest.getUsername())).build();
     }
 }

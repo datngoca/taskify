@@ -1,17 +1,8 @@
 package com.example.taskify_backend.exception;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public class NotFoundTaskException extends RuntimeException {
-
-    private ErrorCode errorCode;
-
+public class NotFoundTaskException extends AppException {
     public NotFoundTaskException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
-    }
+        super(errorCode);
 
+    }
 }

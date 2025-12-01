@@ -2,18 +2,27 @@ package com.example.taskify_backend.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
-    TASK_EXISTED(101, "Task Existed!"),
-    TASK_NOT_FOUND(404, "Task Not Found!"),
-    TITLE_NOT_FOUND(123, "Title Not Found!"),
-    DESCRIPTION_NOT_FOUND(122, "Description Not Found!"),
-    USER_NOT_FOUND(404, "User Not Found!"),
+    TASK_EXISTED(101, "Task Existed!", HttpStatus.BAD_REQUEST),
+    USER_EXISTED(102, "User Existed!", HttpStatus.BAD_REQUEST),
 
-    PERMISSION_DENIED(2000, "Permission Denied!");
+    TASK_NOT_FOUND(404, "Task Not Found!",HttpStatus.NOT_FOUND),
+    USER_NOT_FOUND(404, "User Not Found!", HttpStatus.NOT_FOUND),
+
+    PERMISSION_DENIED(999, "Permission Denied!", HttpStatus.FORBIDDEN),
+
+    INVALID_PASSWORD(301, "Password must be at least 8 characters long", HttpStatus.BAD_REQUEST),
+    INVALID_USERNAME(302, "Username must be at least 4 characters long", HttpStatus.BAD_REQUEST),
+    NOT_BLANK(303, "Field cannot be blank", HttpStatus.BAD_REQUEST),
+
+
+    ;
 
     private final int code;
     private final String message;
+    private HttpStatus statusCode;
 }
