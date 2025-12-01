@@ -30,11 +30,11 @@ const authService = {
       username,
       password,
     });
-    if (response.data.token) {
-      localStorage.setItem("user", JSON.stringify(response.data)); // Lưu user info
-      localStorage.setItem("token", response.data.token); // Lưu token
+    const tokenResponse = response.data.result.token;
+    if (tokenResponse) {
+      localStorage.setItem("token", tokenResponse);
     }
-    return response.data;
+    return response.data.result;
   },
 
   register: async (username, password) => {
@@ -42,15 +42,20 @@ const authService = {
   },
 
   logout: () => {
-    localStorage.removeItem("user");
     localStorage.removeItem("token");
+  },
+
+  getCurrentUser: async () => {
+    const response = await axiosClient.get("/auth/me");
+    return response.data.result;
   },
 };
 const taskService = {
+  // Task API
   // 1. Lấy danh sách
   getAll: async () => {
     const response = await axiosClient.get("/task");
-    return response.data;
+    return response.data.result;
   },
 
   // 2. Thêm mới
@@ -59,13 +64,13 @@ const taskService = {
       title,
       status: "todo", // Mặc định backend xử lý, nhưng gửi luôn cho chắc
     });
-    return response.data;
+    return response.data.result;
   },
 
   // 3. Cập nhật (Sửa tên hoặc Đổi cột)
   update: async (id, taskData) => {
     const response = await axiosClient.put(`task/${id}`, taskData);
-    return response.data;
+    return response.data.result;
   },
 
   // 4. Xóa
