@@ -2,7 +2,6 @@ import { createContext, useReducer, useEffect } from "react";
 
 import AuthReducer, { initialState } from "./AuthReducer";
 import { authService } from "../services/api";
-import { Navigate } from "react-router-dom";
 const AuthContext = createContext(initialState);
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, initialState);
@@ -11,11 +10,11 @@ const AuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       try {
         const token = localStorage.getItem("token");
-        const user = localStorage.getItem("user");
         if (token) {
+          const user = await authService.getCurrentUser();
           dispatch({
             type: "INITIALIZE",
-            payload: { isAuthenticated: true, user },
+            payload: { isAuthenticated: true, [user]: user },
           });
         } else {
           dispatch({
@@ -25,7 +24,7 @@ const AuthProvider = ({ children }) => {
         }
       } catch (err) {
         // Nếu token hết hạn hoặc lỗi
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem("token");
         dispatch({
           type: "INITIALIZE",
           payload: { isAuthenticated: false, user: null },

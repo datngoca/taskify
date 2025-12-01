@@ -15,7 +15,6 @@ import styles from "./Task.module.scss";
 import TaskInput from "./TaskInput/TaskInput.jsx";
 import TaskItem from "./TaskItem/TaskItem.jsx";
 import ColumnTasks from "./ColumnTasks/ColumnTasks.jsx";
-import Login from "../Auth/AuthForm.jsx";
 const cx = classNames.bind(styles);
 
 const Task = () => {
@@ -28,22 +27,17 @@ const Task = () => {
   );
   // 1. Kiểm tra lúc mở app: Có token trong localStorage không?
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      setIsAuthenticated(true);
-      fetchTasks(); // Tải dữ liệu ngay
-    }
+    const fetchTasks = async () => {
+      try {
+        const data = await taskService.getAll();
+        console.log("Dữ liệu task:", data);
+        setTasks(data);
+      } catch (error) {
+        console.error("Lỗi tải task (có thể token hết hạn)", error);
+      }
+    };
+    fetchTasks();
   }, []);
-
-  const fetchTasks = async () => {
-    try {
-      const data = await taskService.getAll();
-      setTasks(data.result);
-    } catch (error) {
-      console.error("Lỗi tải task (có thể token hết hạn)", error);
-      handleLogout(); // Nếu lỗi Auth thì logout luôn
-    }
-  };
 
   // Handle add task
   const handleAddTask = async (task) => {
