@@ -1,19 +1,16 @@
 package com.example.taskify_backend.controller;
 
-import com.example.taskify_backend.entity.User;
-import com.example.taskify_backend.dto.request.LoginRequest;
+import com.example.taskify_backend.dto.request.SigninRequest;
 import com.example.taskify_backend.dto.request.SignupRequest;
+import com.example.taskify_backend.dto.response.ApiResponse;
 import com.example.taskify_backend.dto.response.JwtResponse;
-import com.example.taskify_backend.repository.UserRepository;
-import com.example.taskify_backend.security.jwt.JwtUtils;
+import com.example.taskify_backend.dto.response.UserResponse;
+import com.example.taskify_backend.entity.User;
+import com.example.taskify_backend.service.AuthenticationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -21,49 +18,43 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private final AuthenticationService authenticationService;
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    PasswordEncoder encoder;
-
-    @Autowired
-    JwtUtils jwtUtils;
+    public AuthController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
     // 1. ĐĂNG KÝ
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body("Error: Username is already taken!");
-        }
+    public ApiResponse<String> registerUser(@RequestBody SignupRequest signUpRequest) {
+        String jwtResponse = authenticationService.register(signUpRequest);
 
-        // Tạo user mới (Mã hoá password)
-        User user = new User(signUpRequest.getUsername(),
-                encoder.encode(signUpRequest.getPassword()),
-                "USER");
-
-        userRepository.save(user);
-
-        return ResponseEntity.ok("User registered successfully!");
+        return ApiResponse.<String>builder()
+                .code(201)
+                .message("User registered successfully!")
+                .result(jwtResponse)
+                .build();
     }
 
     // 2. ĐĂNG NHẬP
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ApiResponse<JwtResponse> authenticateUser(@RequestBody SigninRequest loginRequest) {
 
-        // Xác thực username/password
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
-        // Nếu xác thực thành công, lưu vào context
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // Sinh ra token
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
+        JwtResponse jwtResponse = authenticationService.login(loginRequest);
         // Trả về token cho người dùng
-        return ResponseEntity.ok(new JwtResponse(jwt, loginRequest.getUsername()));
+        return ApiResponse.<JwtResponse>builder()
+                .code(200)
+                .message("User signed in successfully!")
+                .result(jwtResponse)
+                .build();
+    }
+
+    @GetMapping("/me")
+    public ApiResponse<UserResponse> getCurrentUser() {
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Get current user successfully!")
+                .result(authenticationService.getCurrentUser())
+                .build();
     }
 }
