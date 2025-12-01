@@ -35,10 +35,10 @@ Dự án được chia thành 5 cấp độ (Levels) để nâng cấp dần k�
 **Mục tiêu:** Nâng cấp giao diện hiện đại và thay đổi cách tương tác người dùng.
 
 - **Tính năng dự kiến:**
-  - [ ] **Drag & Drop (Kéo thả):** Kéo task giữa các cột (Todo ➝ Doing ➝ Done).
-  - [ ] **Giao diện Kanban:** Chia màn hình thành 3 cột rõ ràng.
-  - [ ] **UI Makeover:** Sử dụng Global Styles, biến màu sắc chuẩn (SCSS), thêm Animation nhẹ.
-  - [ ] **Modal:** Form sửa task hiện dưới dạng Popup thay vì inline.
+  - [x] **Drag & Drop (Kéo thả):** Kéo task giữa các cột (Todo ➝ Doing ➝ Done).
+  - [x] **Giao diện Kanban:** Chia màn hình thành 3 cột rõ ràng.
+  - [x] **UI Makeover:** Sử dụng Global Styles, biến màu sắc chuẩn (SCSS), thêm Animation nhẹ.
+  - [x] **Modal:** Form sửa task hiện dưới dạng Popup thay vì inline.
 - **Kỹ thuật mới:**
   - Thư viện: `dnd-kit` hoặc `react-beautiful-dnd`.
   - CSS Flexbox/Grid nâng cao.
@@ -68,10 +68,10 @@ Dự án được chia thành 5 cấp độ (Levels) để nâng cấp dần k�
 **Mục tiêu:** Bảo mật ứng dụng chặt chẽ và xử lý logic phức tạp.
 
 - **Tính năng dự kiến:**
-  - [ ] **Spring Security:** Cấu hình bảo mật cho hệ thống.
-  - [ ] **JWT (JSON Web Token):** Xác thực người dùng (Login/Register).
-  - [ ] **Validation:** Kiểm tra dữ liệu đầu vào chặt chẽ (@Valid, @NotNull...).
-  - [ ] **Pagination:** Phân trang danh sách task (Pageable).
+  - [x] **Spring Security:** Cấu hình bảo mật cho hệ thống.
+  - [x] **JWT (JSON Web Token):** Xác thực người dùng (Login/Register).
+  - [x] **Validation:** Kiểm tra dữ liệu đầu vào chặt chẽ (@Valid, @NotNull...).
+  - [x] **Pagination:** Phân trang danh sách task (Pageable).
 - **Kỹ thuật mới:**
   - Spring Security + JWT Filter.
   - Bean Validation.

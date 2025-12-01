@@ -9,29 +9,39 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 
-import { taskService } from "../../services/api.jsx";
+import { authService, taskService } from "../../services/api.jsx";
 
 import styles from "./Task.module.scss";
 import TaskInput from "./TaskInput/TaskInput.jsx";
 import TaskItem from "./TaskItem/TaskItem.jsx";
 import ColumnTasks from "./ColumnTasks/ColumnTasks.jsx";
-
+import Login from "../Auth/AuthForm.jsx";
 const cx = classNames.bind(styles);
 
 const Task = () => {
   const [tasks, setTasks] = useState([]);
   const [activeId, setActiveId] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+  );
+  // 1. Kiểm tra lúc mở app: Có token trong localStorage không?
   useEffect(() => {
-    fetchTasks();
+    const user = localStorage.getItem("user");
+    if (user) {
+      setIsAuthenticated(true);
+      fetchTasks(); // Tải dữ liệu ngay
+    }
   }, []);
 
   const fetchTasks = async () => {
     try {
       const data = await taskService.getAll();
-      setTasks(data);
+      setTasks(data.result);
     } catch (error) {
-      console.error("Lỗi tải dữ liệu:", error);
+      console.error("Lỗi tải task (có thể token hết hạn)", error);
+      handleLogout(); // Nếu lỗi Auth thì logout luôn
     }
   };
 
@@ -74,7 +84,7 @@ const Task = () => {
       });
 
       setTasks(tasks.map((t) => (t.id === id ? updatedTask : t)));
-      setEditingTask(null); // Đóng modal
+      // setEditingTask(null); // Đóng modal
     } catch (error) {
       alert("Lỗi cập nhật!");
     }
@@ -86,10 +96,6 @@ const Task = () => {
     { id: "doing", title: "Doing" },
     { id: "done", title: "Done" },
   ];
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
-  );
 
   // --- LOGIC XỬ LÝ KÉO THẢ (QUAN TRỌNG) ---
   // --- HÀM 1: BẮT ĐẦU KÉO (QUAN TRỌNG ĐỂ HIỆN OVERLAY) ---

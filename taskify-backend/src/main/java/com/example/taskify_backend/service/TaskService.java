@@ -73,7 +73,7 @@ public class TaskService {
             taskToUpdate.setTitle(task.getTitle());
         if (task.getDescription() != null)
             taskToUpdate.setDescription(task.getDescription());
-        taskToUpdate.setUser(currentUser);
+        taskToUpdate.setStatus(task.getStatus());
         return taskRepository.save(taskToUpdate);
     }
 
