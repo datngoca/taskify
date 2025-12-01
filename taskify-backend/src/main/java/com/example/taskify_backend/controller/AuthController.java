@@ -5,7 +5,6 @@ import com.example.taskify_backend.dto.request.SignupRequest;
 import com.example.taskify_backend.dto.response.ApiResponse;
 import com.example.taskify_backend.dto.response.JwtResponse;
 import com.example.taskify_backend.dto.response.UserResponse;
-import com.example.taskify_backend.entity.User;
 import com.example.taskify_backend.service.AuthenticationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
