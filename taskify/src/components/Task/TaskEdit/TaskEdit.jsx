@@ -8,13 +8,12 @@ import Input from "../../UI/Input/Input";
 const cx = classNames.bind(styles);
 
 const TaskEdit = ({ task, onSave, onCancel }) => {
-  const [editedValue, setEditedValue] = useState(task.name);
+  const [editedValue, setEditedValue] = useState(task.title);
 
   const handleSave = () => {
     onSave(task.id, { fieldName: "title", value: editedValue });
     onCancel();
   };
-
   return (
     <div className={cx("overlay")}>
       {/* stopPropagation để click vào modal không bị đóng modal */}
@@ -24,10 +23,10 @@ const TaskEdit = ({ task, onSave, onCancel }) => {
         <Input
           type="text"
           className={cx("input")}
-          defaultValue={editedValue}
           onChange={(e) => setEditedValue(e.target.value)}
           autoFocus
           onKeyDown={(e) => e.key === "Enter" && handleSave()}
+          value={editedValue}
         />
 
         <div className={cx("buttonGroup")}>

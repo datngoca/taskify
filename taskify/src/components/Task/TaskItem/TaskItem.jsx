@@ -62,7 +62,7 @@ const TaskItem = ({ task, isOverlay, onDeleteTask, onSaveTask }) => {
       {/* Nếu editingTask khác null thì hiện Modal */}
       {editingTask && (
         <TaskEdit
-          task={editingTask}
+          task={task}
           onSave={onSaveTask}
           onCancel={() => setEditingTask(null)}
         />
