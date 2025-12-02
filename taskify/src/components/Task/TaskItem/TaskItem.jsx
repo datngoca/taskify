@@ -1,20 +1,21 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { FaCheck, FaEdit, FaTrash } from "react-icons/fa";
 import classNames from "classnames/bind";
 
 import TaskEdit from "../TaskEdit/TaskEdit.jsx";
 import styles from "./TaskItem.module.scss";
 import Button from "../../UI/Button/Button.jsx";
-
+import { TaskContext } from "../Task.jsx";
 const cx = classNames.bind(styles);
 
-const TaskItem = ({ task, isOverlay, onDeleteTask, onSaveTask }) => {
+const TaskItem = ({ task, isOverlay }) => {
+  const { handleDeleteTask, handleUpdateTask } = useContext(TaskContext);
   const [status, setStatus] = useState(task.completed);
   const [editingTask, setEditingTask] = useState(null);
 
   const handleStatusChange = () => {
     setStatus(!status);
-    onSaveTask(task.id, { fieldName: "completed", value: !status });
+    handleUpdateTask(task.id, { fieldName: "completed", value: !status });
   };
   return (
     <>
@@ -51,7 +52,7 @@ const TaskItem = ({ task, isOverlay, onDeleteTask, onSaveTask }) => {
           {/* Nút Delete dùng style danger */}
           <Button
             danger
-            onClick={() => onDeleteTask(task.id)}
+            onClick={() => handleDeleteTask(task.id)}
             rightIcon={<FaTrash />}
           >
             Delete
@@ -61,11 +62,7 @@ const TaskItem = ({ task, isOverlay, onDeleteTask, onSaveTask }) => {
       {/* RENDER MODAL CÓ ĐIỀU KIỆN */}
       {/* Nếu editingTask khác null thì hiện Modal */}
       {editingTask && (
-        <TaskEdit
-          task={task}
-          onSave={onSaveTask}
-          onCancel={() => setEditingTask(null)}
-        />
+        <TaskEdit task={task} onCancel={() => setEditingTask(null)} />
       )}
     </>
   );

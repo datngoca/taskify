@@ -1,3 +1,4 @@
+import { createContext } from "react";
 import classNames from "classnames/bind";
 import { DndContext, DragOverlay, closestCorners } from "@dnd-kit/core";
 
@@ -12,6 +13,7 @@ import { COLUMNS } from "./constants";
 
 const cx = classNames.bind(styles);
 
+export const TaskContext = createContext(null);
 const Task = () => {
   // Lấy toàn bộ logic từ Custom Hook
   const {
@@ -25,36 +27,36 @@ const Task = () => {
     handleDragStart,
     handleDragEnd,
   } = useTaskBoard();
-
+  const value = { handleAddTask, handleDeleteTask, handleUpdateTask };
   return (
-    <div className={cx("container")}>
-      <TaskInput onAddTask={handleAddTask} />
+    <TaskContext value={value}>
+      <div className={cx("container")}>
+        <TaskInput onAddTask={handleAddTask} />
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCorners}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <div className={cx("board")}>
-          {COLUMNS.map((col) => (
-            <ColumnTasks
-              key={col.id}
-              col={col}
-              tasks={tasks.filter((t) => t.status === col.id)}
-              handleDeleteTask={handleDeleteTask}
-              handleUpdateTask={handleUpdateTask}
-            />
-          ))}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCorners}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <div className={cx("board")}>
+            {COLUMNS.map((col) => (
+              <ColumnTasks
+                key={col.id}
+                col={col}
+                tasks={tasks.filter((t) => t.status === col.id)}
+              />
+            ))}
+          </div>
 
-        <DragOverlay>
-          {activeId && activeTask ? (
-            <TaskItem task={activeTask} isOverlay={true} />
-          ) : null}
-        </DragOverlay>
-      </DndContext>
-    </div>
+          <DragOverlay>
+            {activeId && activeTask ? (
+              <TaskItem task={activeTask} isOverlay={true} />
+            ) : null}
+          </DragOverlay>
+        </DndContext>
+      </div>
+    </TaskContext>
   );
 };
 
