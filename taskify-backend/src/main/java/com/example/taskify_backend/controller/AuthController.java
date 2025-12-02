@@ -4,12 +4,15 @@ import com.example.taskify_backend.dto.request.SigninRequest;
 import com.example.taskify_backend.dto.request.SignupRequest;
 import com.example.taskify_backend.dto.response.ApiResponse;
 import com.example.taskify_backend.dto.response.JwtResponse;
+import com.example.taskify_backend.dto.response.SigninResponse;
 import com.example.taskify_backend.dto.response.UserResponse;
 import com.example.taskify_backend.service.AuthenticationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -31,23 +34,33 @@ public class AuthController {
 
         return ApiResponse.<String>builder()
                 .code(201)
-                .message("User registered successfully!")
-                .result(jwtResponse)
+                .message(jwtResponse)
                 .build();
     }
 
     // 2. ĐĂNG NHẬP
-
     @PostMapping("/signin")
-    public ApiResponse<JwtResponse> authenticateUser(@RequestBody SigninRequest loginRequest) {
+    public ResponseEntity<ApiResponse<SigninResponse>> authenticateUser(@RequestBody SigninRequest loginRequest) {
 
-        JwtResponse jwtResponse = authenticationService.login(loginRequest);
-        // Trả về token cho người dùng
-        return ApiResponse.<JwtResponse>builder()
-                .code(200)
-                .message("User signed in successfully!")
-                .result(jwtResponse)
+        JwtResponse loginResult = authenticationService.login(loginRequest);
+        ResponseCookie jwtCookie = ResponseCookie.from("refresh_token", loginResult.getRefreshToken())
+                .httpOnly(true) // Chống XSS
+                .secure(false) // Đặt true nếu chạy HTTPS
+                .path("/api/v1/auth/refresh-token") // Cookie chỉ được gửi khi gọi endpoint này
+                .maxAge(24 * 60 * 60) // 1 ngày
+                .sameSite("Strict") // Chống CSRF (Tùy chọn)
                 .build();
+        SigninResponse jwtResponse = new SigninResponse(loginResult.getToken());
+        return ResponseEntity.ok()
+                // Gắn Cookie vào Header "Set-Cookie"
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+
+                // Gắn Body là ApiResponse
+                .body(ApiResponse.<SigninResponse>builder()
+                        .code(200)
+                        .message("User signed in successfully!")
+                        .result(jwtResponse) // Lưu ý: Dùng biến loginResult bạn đã khai báo ở trên
+                        .build());
     }
 
     @GetMapping("/me")
@@ -58,4 +71,35 @@ public class AuthController {
                 .result(authenticationService.getCurrentUser())
                 .build();
     }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ApiResponse<SigninResponse>> refreshToken(
+            @CookieValue(name = "refresh_token", required = false) String requestRefreshToken) {
+        if (requestRefreshToken == null)
+            return ResponseEntity.badRequest().build();
+        JwtResponse jwtResponse = authenticationService.refreshToken(requestRefreshToken);
+
+        // 1. Set Refresh Token MỚI vào Cookie
+        ResponseCookie cookie = ResponseCookie
+                .from("refresh_token", jwtResponse.getRefreshToken()) // Lấy token mới từ kết quả
+                .httpOnly(true)
+                .secure(false) // nhớ set true nếu chạy HTTPS
+                .path("/api/v1/auth/refresh-token")
+                .maxAge(24 * 60 * 60)
+                .build();
+        SigninResponse signinResponse = new SigninResponse(jwtResponse.getToken());
+        // 2. Trả Access Token MỚI vào Body
+        return ResponseEntity.ok()
+                // Gắn Cookie vào Header "Set-Cookie"
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+
+                // Gắn Body là ApiResponse
+                .body(ApiResponse.<SigninResponse>builder()
+                        .code(200)
+                        .message("User signed in successfully!")
+                        .result(signinResponse) // Lưu ý: Dùng biến loginResult bạn đã khai báo ở trên
+                        .build());
+
+    }
+
 }

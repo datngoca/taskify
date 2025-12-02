@@ -1,7 +1,10 @@
 package com.example.taskify_backend.service;
 
+import java.time.Instant;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,15 +15,29 @@ import org.springframework.stereotype.Service;
 import com.example.taskify_backend.dto.request.SigninRequest;
 import com.example.taskify_backend.dto.request.SignupRequest;
 import com.example.taskify_backend.dto.response.JwtResponse;
+import com.example.taskify_backend.dto.response.SigninResponse;
 import com.example.taskify_backend.dto.response.UserResponse;
+import com.example.taskify_backend.entity.RefreshToken;
 import com.example.taskify_backend.entity.User;
+import com.example.taskify_backend.exception.AuthenException;
 import com.example.taskify_backend.exception.ErrorCode;
 import com.example.taskify_backend.exception.NotFoundTaskException;
+import com.example.taskify_backend.exception.NotFoundUserException;
+import com.example.taskify_backend.repository.RefreshTokenRepository;
 import com.example.taskify_backend.repository.UserRepository;
 import com.example.taskify_backend.security.jwt.JwtUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class AuthenticationService {
+    @Value("${taskify.app.jwtRefreshExpirationMs}") // Ví dụ: 30 ngày (Đọc từ application.properties)
+    private Long refreshTokenDurationMs;
+
+    @Autowired
+    private final RefreshTokenRepository refreshTokenRepository;
+
     @Autowired
     private final UserRepository userRepository;
 
@@ -36,20 +53,43 @@ public class AuthenticationService {
     @Autowired
     private final ModelMapper modelMapper;
 
-    public AuthenticationService(UserRepository userRepository,
+    public AuthenticationService(
+            UserRepository userRepository,
             AuthenticationManager authenticationManager,
             JwtUtils jwtUtils,
             PasswordEncoder encoder,
-            ModelMapper modelMapper) {
+            ModelMapper modelMapper,
+            RefreshTokenRepository refreshTokenRepository) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.encoder = encoder;
         this.modelMapper = modelMapper;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     public UserResponse toUserResponse(User user) {
         return modelMapper.map(user, UserResponse.class);
+    }
+
+    public RefreshToken createRefreshToken(int userId) {
+        RefreshToken refreshToken = new RefreshToken();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundUserException(ErrorCode.USER_NOT_FOUND));
+        // Gán user
+        refreshToken.setUser(user);
+        // Gán thời gian hết hạn
+        refreshToken.setExpiryDate(
+                java.time.Instant.now().plusMillis(refreshTokenDurationMs));
+        // Gán chuỗi token ngẫu nhiên
+        refreshToken.setToken(java.util.UUID.randomUUID().toString());
+        refreshToken = refreshTokenRepository.save(refreshToken);
+        return refreshToken;
+    }
+
+    public String createAuthenticationToken(String username) {
+        // Sinh ra token
+        return jwtUtils.generateTokenFromUsername(username);
     }
 
     public String register(SignupRequest signUpRequest) {
@@ -65,19 +105,16 @@ public class AuthenticationService {
         return "User registered successfully!";
     }
 
-    // Register method
+    // Login method
     public JwtResponse login(SigninRequest signinRequest) {
-        // Xác thực username/password
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
-
-        // Nếu xác thực thành công, lưu vào context
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // Sinh ra token
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
-        return new JwtResponse(jwt, signinRequest.getUsername());
+        String jwt = createAuthenticationToken(signinRequest.getUsername());
+        int userId = userRepository.findByUsername(signinRequest.getUsername())
+                .orElseThrow(() -> new NotFoundTaskException(ErrorCode.USER_NOT_FOUND))
+                .getId();
+        // Xoá RT cũ nếu có
+        refreshTokenRepository.deleteByUserId(userId);
+        RefreshToken refreshToken = createRefreshToken(userId);
+        return new JwtResponse(jwt, refreshToken.getToken());
     }
 
     // Get current user
@@ -88,7 +125,42 @@ public class AuthenticationService {
                 .orElseThrow(() -> new NotFoundTaskException(ErrorCode.USER_NOT_FOUND));
         UserResponse userResponse = toUserResponse(user);
         return userResponse;
-
     }
 
+    public RefreshToken verifyExpiration(RefreshToken token) {
+        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
+            // Token đã hết hạn, xóa khỏi DB và ném lỗi
+            refreshTokenRepository.delete(token);
+            throw new AuthenException(ErrorCode.INVALID_REFRESH_TOKEN);
+        }
+        return token;
+    }
+
+    public JwtResponse refreshToken(String requestRefreshToken) {
+        JwtResponse jwtResponse = refreshTokenRepository.findByToken(requestRefreshToken)
+                // 2. Kiểm tra hết hạn RT
+                .map(this::verifyExpiration)
+                .map(token -> {
+                    User user = token.getUser();
+
+                    // --- BẮT ĐẦU REFRESH TOKEN ROTATION ---
+
+                    // 3. Xóa Refresh Token cũ khỏi DB (Thu hồi)
+                    refreshTokenRepository.deleteByUserId(user.getId());
+
+                    // 4. Tạo mới Access Token
+                    String newToken = createAuthenticationToken(user.getUsername());
+
+                    // 5. Tạo mới Refresh Token (Chuỗi UUID ngẫu nhiên)
+                    RefreshToken refreshToken = createRefreshToken(user.getId());
+
+                    // --- KẾT THÚC REFRESH TOKEN ROTATION ---
+
+                    // 7. Trả về cặp token mới
+                    return new JwtResponse(newToken, refreshToken.getToken());
+                })
+                .orElseThrow(() -> new AuthenException(ErrorCode.INVALID_REFRESH_TOKEN));
+        // ✅ Log kết quả cuối cùng (nhớ @ToString hoặc @Data trong DTO)
+        return jwtResponse;
+    }
 }
