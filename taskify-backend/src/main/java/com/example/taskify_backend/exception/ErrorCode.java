@@ -20,10 +20,9 @@ public enum ErrorCode {
     NOT_BLANK(303, "Field cannot be blank", HttpStatus.BAD_REQUEST),
 
     AUTHENTICATION_FAILED(401, "Authentication Failed!", HttpStatus.UNAUTHORIZED),
-    INVALID_TOKEN(402, "Invalid Token!", HttpStatus.UNAUTHORIZED),
-    INVALID_REFRESH_TOKEN(403, "Invalid Refresh Token!", HttpStatus.UNAUTHORIZED)
-
-    ;
+    INVALID_TOKEN(402, "Invalid Token!", HttpStatus.BAD_REQUEST),
+    INVALID_REFRESH_TOKEN(403, "Invalid Refresh Token!", HttpStatus.UNAUTHORIZED),
+    TOKEN_EXPIRED(404, "EXpired refresh token", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;

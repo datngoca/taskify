@@ -3,7 +3,12 @@ package com.example.taskify_backend.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.example.taskify_backend.exception.AuthenException;
+import com.example.taskify_backend.exception.ErrorCode;
 
 import java.security.Key;
 import java.util.Date;
@@ -37,13 +42,16 @@ public class JwtUtils {
     }
 
     // 3. KIỂM TRA TOKEN CÓ HỢP LỆ KHÔNG
-    public boolean validateJwtToken(String authToken) {
+    public void validateJwtToken(String authToken) {
         try {
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
-            return true;
-        } catch (JwtException e) {
-            System.out.println("Invalid JWT token: " + e.getMessage());
+        } catch (ExpiredJwtException e) {
+            // Đây là lỗi hết hạn -> Ném lỗi Custom của bạn
+            throw new AuthenException(ErrorCode.TOKEN_EXPIRED);
+            // Hoặc tạo ErrorCode riêng: ErrorCode.TOKEN_EXPIRED
+        } catch (JwtException | IllegalArgumentException e) {
+            // Các lỗi khác (sai chữ ký, rỗng...) -> Ném lỗi chung
+            throw new AuthenException(ErrorCode.INVALID_TOKEN);
         }
-        return false;
     }
 }

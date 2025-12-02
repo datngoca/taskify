@@ -1,4 +1,5 @@
 package com.example.taskify_backend.controller;
+
 import com.example.taskify_backend.dto.request.AddTaskRequest;
 import com.example.taskify_backend.dto.response.ApiResponse;
 import com.example.taskify_backend.entity.Task;
@@ -10,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/task")
-@CrossOrigin(origins = "http://localhost:5173")
 public class TaskController {
     private final TaskService taskService;
 
@@ -36,7 +36,7 @@ public class TaskController {
                 .build();
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ApiResponse<String> deleteTaskById(@PathVariable Integer id) {
         taskService.deleteTaskById(id);
         return ApiResponse.<String>builder()
@@ -45,7 +45,6 @@ public class TaskController {
                 .result("Delete Success")
                 .build();
     }
-
 
     @PostMapping
     public ApiResponse<Task> addTask(@RequestBody @Valid AddTaskRequest task) {

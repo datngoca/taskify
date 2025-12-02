@@ -10,7 +10,7 @@ import lombok.*;
 public class AddTaskRequest {
     @NotBlank(message = "NOT_BLANK")
     private String title;
-    @NotBlank(message = "NOT_BLANK")
+    // @NotBlank(message = "NOT_BLANK")
     private String description;
     @NotBlank(message = "NOT_BLANK")
     private String status;
