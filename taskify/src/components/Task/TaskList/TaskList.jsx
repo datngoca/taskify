@@ -10,7 +10,7 @@ import SortableItem from "../SortableItem/index.jsx";
 
 const cx = classNames.bind(styles);
 
-const TaskList = ({ tasks, onDeleteTask, onSaveTask }) => {
+const TaskList = ({ tasks }) => {
   return (
     <SortableContext
       items={tasks} // Cần truyền mảng các ID
@@ -22,11 +22,7 @@ const TaskList = ({ tasks, onDeleteTask, onSaveTask }) => {
         ) : (
           tasks?.map((task) => (
             <SortableItem key={task.id} id={task.id}>
-              <TaskItem
-                task={task}
-                onDeleteTask={onDeleteTask}
-                onSaveTask={onSaveTask}
-              />
+              <TaskItem task={task} />
             </SortableItem>
           ))
         )}

@@ -55,7 +55,7 @@ public class TaskService {
         User currentUser = getCurrentUser();
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundTaskException(ErrorCode.TASK_NOT_FOUND));
-        if (task.getUser().getId().equals(currentUser.getId())) {
+        if (!currentUser.getId().equals(task.getUser().getId())) {
             throw new InvalidUserException(ErrorCode.PERMISSION_DENIED);
         }
         taskRepository.deleteById(id);

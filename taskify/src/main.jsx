@@ -2,12 +2,12 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import GlobalStyle from "./components/GlobalStyle/index.jsx";
-import "./styles/GlobalStyle.scss"; 
+import "./styles/GlobalStyle.scss";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    {/* <GlobalStyle> */}
-    <App />
-    {/* </GlobalStyle> */}
-  </StrictMode>
+  // <StrictMode>
+  //   {/* <GlobalStyle> */}
+  //   {/* </GlobalStyle> */}
+  // </StrictMode>
+  <App />
 );

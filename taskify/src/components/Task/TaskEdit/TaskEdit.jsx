@@ -1,20 +1,21 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import classNames from "classnames/bind";
 
 import styles from "./TaskEdit.module.scss";
 import Button from "../../UI/Button/Button";
 import Input from "../../UI/Input/Input";
+import { TaskContext } from "../Task.jsx";
 
 const cx = classNames.bind(styles);
 
-const TaskEdit = ({ task, onSave, onCancel }) => {
-  const [editedValue, setEditedValue] = useState(task.name);
+const TaskEdit = ({ task, onCancel }) => {
+  const { handleUpdateTask } = useContext(TaskContext);
+  const [editedValue, setEditedValue] = useState(task.title);
 
   const handleSave = () => {
-    onSave(task.id, { fieldName: "title", value: editedValue });
+    handleUpdateTask(task.id, { fieldName: "title", value: editedValue });
     onCancel();
   };
-
   return (
     <div className={cx("overlay")}>
       {/* stopPropagation để click vào modal không bị đóng modal */}
@@ -24,10 +25,10 @@ const TaskEdit = ({ task, onSave, onCancel }) => {
         <Input
           type="text"
           className={cx("input")}
-          defaultValue={editedValue}
           onChange={(e) => setEditedValue(e.target.value)}
           autoFocus
           onKeyDown={(e) => e.key === "Enter" && handleSave()}
+          value={editedValue}
         />
 
         <div className={cx("buttonGroup")}>

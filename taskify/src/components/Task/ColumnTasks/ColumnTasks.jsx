@@ -9,7 +9,7 @@ import styles from "./ColumnTasks.module.scss";
 import TaskList from "../TaskList/TaskList";
 
 const cx = classNames.bind(styles);
-const ColumnTasks = ({ col, tasks, handleDeleteTask, handleUpdateTask }) => {
+const ColumnTasks = ({ col, tasks }) => {
   const { setNodeRef } = useDroppable({
     id: col.id, // ID của cột: 'todo', 'doing', 'done'
   });
@@ -24,12 +24,7 @@ const ColumnTasks = ({ col, tasks, handleDeleteTask, handleUpdateTask }) => {
         items={tasks.map((t) => t.id)}
         strategy={verticalListSortingStrategy}
       >
-        <TaskList
-          tasks={tasks}
-          onDeleteTask={handleDeleteTask}
-          onSaveTask={handleUpdateTask}
-          // onCheckTask={handleUpdateTask}
-        />
+        <TaskList tasks={tasks} />
       </SortableContext>
     </div>
   );

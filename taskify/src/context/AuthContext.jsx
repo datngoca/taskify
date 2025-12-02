@@ -1,30 +1,33 @@
 import { createContext, useReducer, useEffect } from "react";
 
 import AuthReducer, { initialState } from "./AuthReducer";
-import { authService } from "../services/api";
+import authService from "../services/authService";
 const AuthContext = createContext(initialState);
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, initialState);
   // 1. Kiểm tra phiên đăng nhập khi F5 trang
   useEffect(() => {
     const initializeAuth = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (token) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          // Gọi API lấy info user.
+          // Nếu token hết hạn, axiosClient bên kia sẽ TỰ ĐỘNG refresh.
           const user = await authService.getCurrentUser();
+
           dispatch({
             type: "INITIALIZE",
-            payload: { isAuthenticated: true, [user]: user },
+            payload: { isAuthenticated: true, user: user },
           });
-        } else {
+        } catch (err) {
+          // Nếu axiosClient đã refresh mà vẫn lỗi -> Nó đã xóa token & redirect rồi
+          // Ở đây ta chỉ cần update state về false cho chắc chắn
           dispatch({
             type: "INITIALIZE",
             payload: { isAuthenticated: false, user: null },
           });
         }
-      } catch (err) {
-        // Nếu token hết hạn hoặc lỗi
-        localStorage.removeItem("token");
+      } else {
         dispatch({
           type: "INITIALIZE",
           payload: { isAuthenticated: false, user: null },
