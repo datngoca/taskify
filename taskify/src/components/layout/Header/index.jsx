@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-import { useAuth } from "../../hooks/useAuth.jsx";
+import { useAuth } from "../../../hooks/useAuth.jsx";
 import classNames from "classnames/bind";
 import styles from "./Header.module.scss";
-import images from "../../assets/img/index.jsx";
-import Button from "../UI/Button/Button.jsx";
+import images from "../../../assets/img";
+import Button from "../../common/Button";
 const cx = classNames.bind(styles);
 const Header = () => {
   const { logout, isAuthenticated } = useAuth();

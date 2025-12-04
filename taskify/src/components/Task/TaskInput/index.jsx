@@ -2,8 +2,8 @@ import { useState } from "react";
 import classNames from "classnames/bind";
 
 import styles from "./TaskInput.module.scss";
-import Button from "../../UI/Button/Button.jsx";
-import Input from "../../UI/Input/Input.jsx";
+import Button from "../../common/Button";
+import Input from "../../common/Input";
 
 const cx = classNames.bind(styles);
 

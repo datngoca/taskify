@@ -1,7 +1,7 @@
 import { useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./TaskFilter.module.scss";
-import Button from "../../UI/Button/Button";
+import Button from "../../common/Button";
 
 const cx = classNames.bind(styles);
 

@@ -1,4 +1,5 @@
 import axiosClient from "../api/axiosClient";
+import axiosPrivate from "../api/axiosPrivate";
 
 const authService = {
   login: async (username, password) => {
@@ -20,12 +21,12 @@ const authService = {
 
   logout: async () => {
     localStorage.removeItem("token");
-    const response = await axiosClient.post("/auth/logout");
+    const response = await axiosPrivate.post("/auth/logout");
     return response.data;
   },
 
   getCurrentUser: async () => {
-    const response = await axiosClient.get("/auth/me");
+    const response = await axiosPrivate.get("/auth/me");
     return response.data.result;
   },
 

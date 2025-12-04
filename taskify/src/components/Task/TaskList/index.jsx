@@ -5,7 +5,7 @@ import {
 } from "@dnd-kit/sortable";
 
 import styles from "./TaskList.module.scss";
-import TaskItem from "../TaskItem/TaskItem.jsx";
+import TaskItem from "../TaskItem";
 import SortableItem from "../SortableItem/index.jsx";
 
 const cx = classNames.bind(styles);

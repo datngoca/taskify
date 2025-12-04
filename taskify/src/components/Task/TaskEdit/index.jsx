@@ -2,9 +2,9 @@ import { useState, useContext } from "react";
 import classNames from "classnames/bind";
 
 import styles from "./TaskEdit.module.scss";
-import Button from "../../UI/Button/Button";
-import Input from "../../UI/Input/Input";
-import { TaskContext } from "../Task.jsx";
+import Button from "../../common/Button";
+import Input from "../../common/Input";
+import { TaskContext } from "..";
 
 const cx = classNames.bind(styles);
 

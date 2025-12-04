@@ -1,5 +1,5 @@
-import Header from "../../components/Header/Header.jsx";
-import Task from "../../components/Task/Task.jsx";
+import Header from "../../components/layout/Header";
+import Task from "../../components/Task";
 
 const Home = () => {
   return (

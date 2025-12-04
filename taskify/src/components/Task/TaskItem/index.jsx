@@ -2,21 +2,17 @@ import { useState, useContext } from "react";
 import { FaCheck, FaEdit, FaTrash } from "react-icons/fa";
 import classNames from "classnames/bind";
 
-import TaskEdit from "../TaskEdit/TaskEdit.jsx";
-import styles from "./TaskItem.module.scss";
-import Button from "../../UI/Button/Button.jsx";
-import { TaskContext } from "../Task.jsx";
+import TaskEdit from "../TaskEdit";
+import Button from "../../common/Button";
+import { TaskContext } from "..";
+import styles from "./TaskItem.module.scss"
 const cx = classNames.bind(styles);
 
 const TaskItem = ({ task, isOverlay }) => {
-  const { handleDeleteTask, handleUpdateTask } = useContext(TaskContext);
-  const [status, setStatus] = useState(task.completed);
+  const { handleDeleteTask } = useContext(TaskContext);
   const [editingTask, setEditingTask] = useState(null);
+  
 
-  const handleStatusChange = () => {
-    setStatus(!status);
-    handleUpdateTask(task.id, { fieldName: "completed", value: !status });
-  };
   return (
     <>
       <div

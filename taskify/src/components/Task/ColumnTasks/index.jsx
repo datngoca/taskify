@@ -6,7 +6,7 @@ import { useDroppable } from "@dnd-kit/core";
 import classNames from "classnames/bind";
 
 import styles from "./ColumnTasks.module.scss";
-import TaskList from "../TaskList/TaskList";
+import TaskList from "../TaskList";
 
 const cx = classNames.bind(styles);
 const ColumnTasks = ({ col, tasks }) => {

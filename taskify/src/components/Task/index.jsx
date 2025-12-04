@@ -3,9 +3,9 @@ import classNames from "classnames/bind";
 import { DndContext, DragOverlay, closestCorners } from "@dnd-kit/core";
 
 import styles from "./Task.module.scss";
-import TaskInput from "./TaskInput/TaskInput";
-import TaskItem from "./TaskItem/TaskItem";
-import ColumnTasks from "./ColumnTasks/ColumnTasks";
+import TaskInput from "./TaskInput";
+import TaskItem from "./TaskItem";
+import ColumnTasks from "./ColumnTasks";
 
 // Import Custom Hook và Constants
 import { useTaskBoard } from "../../hooks/useTaskBoard";

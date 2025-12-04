@@ -2,9 +2,9 @@ import { useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./AuthForm.module.scss";
 
-import Input from "../UI/Input/Input.jsx";
-import Button from "../UI/Button/Button.jsx";
-import { useAuth } from "../../hooks/useAuth.jsx";
+import Input from "../../common/Input";
+import Button from "../../common/Button";
+import { useAuth } from "../../../hooks/useAuth.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 const cx = classNames.bind(styles);
 const Login = () => {
