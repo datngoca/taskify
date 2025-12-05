@@ -1,11 +1,11 @@
-import Header from "../../components/Header/Header.jsx";
-import Task from "../../components/Task/Task.jsx";
+import Header from "@/components/features/Header";
+import ToaskBoard from "@/components/features/TaskBoard";
 
 const Home = () => {
   return (
     <>
       <Header />
-      <Task />
+      <ToaskBoard />
     </>
   );
 };
