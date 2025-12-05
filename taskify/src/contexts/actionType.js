@@ -1,0 +1,8 @@
+export const AUTH_ACTIONS = {
+    INITIALIZE: "INITIALIZE",
+    LOGIN: "LOGIN",
+    LOGOUT: "LOGOUT",
+    REGISTER: "REGISTER",
+    ERROR: "ERROR",
+}
+

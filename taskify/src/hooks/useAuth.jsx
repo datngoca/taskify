@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { AuthContext } from "@/contexts/AuthContext.jsx";
 const useAuth = () => {
   const context = useContext(AuthContext);
   // Kiểm tra an toàn: Nếu dùng useAuth bên ngoài <AuthProvider> thì báo lỗi ngay
