@@ -1,17 +1,16 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { FaCheck, FaEdit, FaTrash } from "react-icons/fa";
 import classNames from "classnames/bind";
 
 import TaskEdit from "../TaskEdit";
-import Button from "../../common/Button";
-import { TaskContext } from "..";
-import styles from "./TaskItem.module.scss"
-const cx = classNames.bind(styles);
+import Button from "@/components/common/Button";
+import styles from "./TaskItem.module.scss";
 
+import { useTask } from "../useTask";
+const cx = classNames.bind(styles);
 const TaskItem = ({ task, isOverlay }) => {
-  const { handleDeleteTask } = useContext(TaskContext);
+  const { handleDeleteTask } = useTask();
   const [editingTask, setEditingTask] = useState(null);
-  
 
   return (
     <>
@@ -30,7 +29,7 @@ const TaskItem = ({ task, isOverlay }) => {
             type="checkbox"
             checked={status}
           /> */}
-          <span className={styles.taskText}>{task.title}</span>
+          <span className={cx("taskText")}>{task.title}</span>
           <span className={cx("status")}>
             {task.completed ? <FaCheck className={cx("icon")} /> : ""}
           </span>

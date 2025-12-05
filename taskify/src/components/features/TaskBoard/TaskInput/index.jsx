@@ -2,24 +2,16 @@ import { useState } from "react";
 import classNames from "classnames/bind";
 
 import styles from "./TaskInput.module.scss";
-import Button from "../../common/Button";
-import Input from "../../common/Input";
+import Button from "@/components/common/Button";
+import Input from "@/components/common/Input";
 
+import { useTask } from "../useTask";
 const cx = classNames.bind(styles);
 
-const TaskInput = ({ onAddTask }) => {
+const TaskInput = () => {
+  const { handleCreateTask } = useTask();
   const [inputValue, setInputValue] = useState("");
 
-  const handleAddTask = () => {
-    if (inputValue.trim() !== "") {
-      const newTask = {
-        title: inputValue,
-      };
-
-      onAddTask(newTask);
-      setInputValue("");
-    }
-  };
   return (
     <>
       <div className={cx("inputGroup")}>
@@ -28,7 +20,7 @@ const TaskInput = ({ onAddTask }) => {
           type="text"
           placeholder="Enter your task..."
         />
-        <Button primary onClick={handleAddTask}>
+        <Button primary onClick={() => handleCreateTask({ title: inputValue })}>
           Add
         </Button>
       </div>

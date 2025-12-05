@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { useAuth } from "../../../hooks/useAuth.jsx";
 import classNames from "classnames/bind";
 import styles from "./Header.module.scss";
@@ -8,7 +6,6 @@ import Button from "../../common/Button";
 const cx = classNames.bind(styles);
 const Header = () => {
   const { logout, isAuthenticated } = useAuth();
-  const [pageActive, setPageActive] = useState("Home");
 
   return (
     <header>

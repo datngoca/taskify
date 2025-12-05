@@ -17,8 +17,8 @@ const taskService = {
   },
 
   // 3. Cập nhật (Sửa tên hoặc Đổi cột)
-  update: async (id, taskData) => {
-    const response = await axiosPrivate.put(`task/${id}`, taskData);
+  update: async (taskData) => {
+    const response = await axiosPrivate.put(`task/${taskData.id}`, taskData);
     return response.data.result;
   },
 
