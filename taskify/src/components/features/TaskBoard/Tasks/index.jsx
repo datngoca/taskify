@@ -15,7 +15,6 @@ import ColumnTasks from "../ColumnTasks";
 
 // Import Custom Hook và Constants
 import { useTask } from "../useTask";
-import { TaskProvider } from "../context/TaskContext";
 import { COLUMNS } from "../constants";
 
 const cx = classNames.bind(styles);

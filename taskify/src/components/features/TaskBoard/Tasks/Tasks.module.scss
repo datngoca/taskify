@@ -1,11 +1,4 @@
-.container {
-  min-width: 550px;
-  margin: 40px auto;
-  background-color: var(--bg-surface);
-  padding: 30px;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-}
+
 .board {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3 cột bằng nhau */
