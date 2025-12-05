@@ -3,7 +3,8 @@ package com.example.taskify_backend.service;
 import com.example.taskify_backend.dto.request.AddTaskRequest;
 import com.example.taskify_backend.entity.Task;
 import com.example.taskify_backend.entity.User;
-import com.example.taskify_backend.exception.*;
+import com.example.taskify_backend.exception.AppException;
+import com.example.taskify_backend.exception.ErrorCode;
 import com.example.taskify_backend.repository.TaskRepository;
 import com.example.taskify_backend.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,16 +32,16 @@ public class TaskService {
 
         // Tìm User trong DB
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundUserException(ErrorCode.PERMISSION_DENIED));
+                .orElseThrow(() -> new AppException(ErrorCode.PERMISSION_DENIED));
     }
 
     public Task getTaskById(int id) {
         User currentUser = getCurrentUser();
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new NotFoundTaskException(ErrorCode.TASK_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
         // KIỂM TRA QUYỀN SỞ HỮU (Chống IDOR)
         if (!task.getUser().getId().equals(currentUser.getId())) {
-            throw new InvalidUserException(ErrorCode.PERMISSION_DENIED);
+            throw new AppException(ErrorCode.PERMISSION_DENIED);
         }
 
         return task;
@@ -54,9 +55,9 @@ public class TaskService {
     public void deleteTaskById(int id) {
         User currentUser = getCurrentUser();
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new NotFoundTaskException(ErrorCode.TASK_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
         if (!currentUser.getId().equals(task.getUser().getId())) {
-            throw new InvalidUserException(ErrorCode.PERMISSION_DENIED);
+            throw new AppException(ErrorCode.PERMISSION_DENIED);
         }
         taskRepository.deleteById(id);
     }
@@ -64,10 +65,10 @@ public class TaskService {
     public Task updateTaskById(int id, AddTaskRequest task) {
         User currentUser = getCurrentUser();
         Task taskToUpdate = taskRepository.findById(id)
-                .orElseThrow(() -> new NotFoundTaskException(ErrorCode.TASK_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
         // KIỂM TRA QUYỀN SỞ HỮU (Chống IDOR)
         if (!taskToUpdate.getUser().getId().equals(currentUser.getId())) {
-            throw new InvalidUserException(ErrorCode.PERMISSION_DENIED);
+            throw new AppException(ErrorCode.PERMISSION_DENIED);
         }
         if (task.getTitle() != null)
             taskToUpdate.setTitle(task.getTitle());

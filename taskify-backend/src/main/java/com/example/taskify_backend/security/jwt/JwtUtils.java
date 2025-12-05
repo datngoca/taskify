@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.example.taskify_backend.exception.AuthenException;
+import com.example.taskify_backend.exception.AppException;
 import com.example.taskify_backend.exception.ErrorCode;
 
 import java.security.Key;
@@ -47,11 +47,11 @@ public class JwtUtils {
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
         } catch (ExpiredJwtException e) {
             // Đây là lỗi hết hạn -> Ném lỗi Custom của bạn
-            throw new AuthenException(ErrorCode.TOKEN_EXPIRED);
+            throw new AppException(ErrorCode.TOKEN_EXPIRED);
             // Hoặc tạo ErrorCode riêng: ErrorCode.TOKEN_EXPIRED
         } catch (JwtException | IllegalArgumentException e) {
             // Các lỗi khác (sai chữ ký, rỗng...) -> Ném lỗi chung
-            throw new AuthenException(ErrorCode.INVALID_TOKEN);
+            throw new AppException(ErrorCode.INVALID_TOKEN);
         }
     }
 }

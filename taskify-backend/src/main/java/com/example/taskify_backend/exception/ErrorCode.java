@@ -7,24 +7,28 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
-    TASK_EXISTED(101, "Task Existed!", HttpStatus.BAD_REQUEST),
-    USER_EXISTED(102, "User Existed!", HttpStatus.BAD_REQUEST),
+    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_KEY(1001, "Uncategorized error", HttpStatus.BAD_REQUEST),
 
-    TASK_NOT_FOUND(404, "Task Not Found!", HttpStatus.NOT_FOUND),
-    USER_NOT_FOUND(404, "User Not Found!", HttpStatus.NOT_FOUND),
+    // User
+    USER_EXISTED(1002, "User existed", HttpStatus.BAD_REQUEST),
+    USER_NOT_FOUND(1005, "User not found", HttpStatus.NOT_FOUND),
+    INVALID_PASSWORD(1004, "Password must be at least 8 characters", HttpStatus.BAD_REQUEST),
+    INVALID_USERNAME(1003, "Username must be at least 4 characters", HttpStatus.BAD_REQUEST),
+    NOT_BLANK(1006, "Field cannot be blank", HttpStatus.BAD_REQUEST),
 
-    PERMISSION_DENIED(999, "Permission Denied!", HttpStatus.FORBIDDEN),
+    // Task
+    TASK_NOT_FOUND(2001, "Task not found", HttpStatus.NOT_FOUND),
+    TASK_EXISTED(2002, "Task Existed!", HttpStatus.BAD_REQUEST),
 
-    INVALID_PASSWORD(301, "Password must be at least 8 characters long", HttpStatus.BAD_REQUEST),
-    INVALID_USERNAME(302, "Username must be at least 4 characters long", HttpStatus.BAD_REQUEST),
-    NOT_BLANK(303, "Field cannot be blank", HttpStatus.BAD_REQUEST),
-
-    AUTHENTICATION_FAILED(401, "Authentication Failed!", HttpStatus.UNAUTHORIZED),
-    INVALID_TOKEN(402, "Invalid Token!", HttpStatus.BAD_REQUEST),
-    INVALID_REFRESH_TOKEN(403, "Invalid Refresh Token!", HttpStatus.UNAUTHORIZED),
-    TOKEN_EXPIRED(404, "EXpired refresh token", HttpStatus.BAD_REQUEST);
+    // Auth & Permission
+    AUTHENTICATION_FAILED(3001, "Authentication Failed!", HttpStatus.UNAUTHORIZED),
+    PERMISSION_DENIED(3002, "Permission Denied!", HttpStatus.FORBIDDEN),
+    INVALID_TOKEN(3003, "Invalid Token!", HttpStatus.UNAUTHORIZED),
+    INVALID_REFRESH_TOKEN(3004, "Invalid Refresh Token!", HttpStatus.UNAUTHORIZED),
+    TOKEN_EXPIRED(3005, "Expired refresh token", HttpStatus.UNAUTHORIZED);
 
     private final int code;
     private final String message;
-    private HttpStatus statusCode;
+    private final HttpStatus statusCode;
 }
