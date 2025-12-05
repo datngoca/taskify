@@ -14,9 +14,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.lang.NonNull;
 
-import com.example.taskify_backend.exception.AuthenException;
-import com.example.taskify_backend.exception.ErrorCode;
+import com.example.taskify_backend.exception.AppException;
 import com.example.taskify_backend.security.UserDetailsServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.taskify_backend.dto.response.ApiResponse;
 
 import java.io.IOException;
 
@@ -63,7 +64,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             // Cho phép request đi tiếp nếu không có lỗi
             filterChain.doFilter(request, response);
 
-        } catch (AuthenException e) {
+        } catch (AppException e) {
             // BẮT LỖI Ở ĐÂY: Khi token hết hạn hoặc sai
             sendErrorResponse(response, e);
         } catch (Exception e) {
@@ -74,19 +75,18 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     // --- HÀM BỔ TRỢ ĐỂ VIẾT JSON ---
-    private void sendErrorResponse(HttpServletResponse response, AuthenException e) throws IOException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Set HTTP Status 401
-        response.setContentType("application/json"); // Báo là trả về JSON
-        response.setCharacterEncoding("UTF-8"); // Để hiển thị tiếng Việt không lỗi font
+    private void sendErrorResponse(HttpServletResponse response, AppException e) throws IOException {
+        response.setStatus(e.getErrorCode().getStatusCode().value());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        // Tạo nội dung JSON thủ công (hoặc dùng ObjectMapper nếu muốn xịn hơn)
-        // Giả sử ErrorCode của bạn có getCode() và getMessage()
-        String jsonError = String.format(
-                "{\"code\": %d, \"message\": \"%s\"}",
-                ErrorCode.AUTHENTICATION_FAILED.getCode(), // Hoặc e.getErrorCode().getCode()
-                ErrorCode.AUTHENTICATION_FAILED.getMessage());
+        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
+                .code(e.getErrorCode().getCode())
+                .message(e.getErrorCode().getMessage())
+                .build();
 
-        response.getWriter().write(jsonError);
+        ObjectMapper mapper = new ObjectMapper();
+        response.getWriter().write(mapper.writeValueAsString(apiResponse));
     }
 
     // Helper: Lấy chuỗi token sạch từ header "Authorization: Bearer abcd..."

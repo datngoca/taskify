@@ -1,0 +1,88 @@
+.sidebar {
+  width: 250px;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 24px 16px;
+}
+
+
+/* --- Navigation Section --- */
+.nav {
+  flex-grow: 1;
+  overflow-y: auto; /* For scrollable menu if needed */
+  padding-bottom: 16px; /* Add some space before the logout button if nav is short */
+}
+
+.nav-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0 12px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+  margin-bottom: 4px;
+
+  svg {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+  }
+
+  &.active {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+}
+
+.divider {
+  border-top: 1px solid var(--border-color);
+  margin: 16px 0;
+}
+
+/* --- Logout Button --- */
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 15px;
+  transition: background-color 0.2s, color 0.2s;
+  margin-top: auto; /* Pushes the button to the bottom */
+
+  svg {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background-color: var(--bg-body);
+    color: var(--danger-color);
+  }
+}

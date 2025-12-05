@@ -1,0 +1,22 @@
+.mainLayout {
+  display: flex;
+  flex-direction: column; /* Changed to column to stack header and main content area */
+  min-height: 100vh;
+}
+
+.main-content-area {
+  display: flex; /* New flex container for sidebar and content */
+  flex: 1; /* Allows this area to take remaining height */
+}
+
+.contentWrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  /* Removed margin-left as positioning is now handled by flex on .main-content-area */
+}
+
+.container {
+  flex-grow: 1;
+  padding: 20px;
+}

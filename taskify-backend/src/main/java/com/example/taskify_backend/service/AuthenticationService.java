@@ -20,10 +20,8 @@ import com.example.taskify_backend.dto.response.JwtResponse;
 import com.example.taskify_backend.dto.response.UserResponse;
 import com.example.taskify_backend.entity.RefreshToken;
 import com.example.taskify_backend.entity.User;
-import com.example.taskify_backend.exception.AuthenException;
+import com.example.taskify_backend.exception.AppException;
 import com.example.taskify_backend.exception.ErrorCode;
-import com.example.taskify_backend.exception.NotFoundTaskException;
-import com.example.taskify_backend.exception.NotFoundUserException;
 import com.example.taskify_backend.repository.RefreshTokenRepository;
 import com.example.taskify_backend.repository.UserRepository;
 import com.example.taskify_backend.security.UserDetailsImpl;
@@ -79,7 +77,7 @@ public class AuthenticationService {
     public RefreshToken createRefreshToken(int userId) {
         RefreshToken refreshToken = new RefreshToken();
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundUserException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         // Gán user
         refreshToken.setUser(user);
         // Gán thời gian hết hạn
@@ -98,7 +96,7 @@ public class AuthenticationService {
 
     public String register(SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            throw new NotFoundTaskException(ErrorCode.USER_EXISTED);
+            throw new AppException(ErrorCode.USER_EXISTED);
         }
         // Tạo user mới (Mã hoá password)
         User user = new User(signUpRequest.getUsername(),
@@ -148,7 +146,7 @@ public class AuthenticationService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundTaskException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         UserResponse userResponse = toUserResponse(user);
         return userResponse;
     }
@@ -157,7 +155,7 @@ public class AuthenticationService {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             // Token đã hết hạn, xóa khỏi DB và ném lỗi
             refreshTokenRepository.delete(token);
-            throw new AuthenException(ErrorCode.INVALID_REFRESH_TOKEN);
+            throw new AppException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
         return token;
     }
@@ -185,7 +183,7 @@ public class AuthenticationService {
                     // 7. Trả về cặp token mới
                     return new JwtResponse(newToken, refreshToken.getToken());
                 })
-                .orElseThrow(() -> new AuthenException(ErrorCode.INVALID_REFRESH_TOKEN));
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_REFRESH_TOKEN));
         // ✅ Log kết quả cuối cùng (nhớ @ToString hoặc @Data trong DTO)
         return jwtResponse;
     }
