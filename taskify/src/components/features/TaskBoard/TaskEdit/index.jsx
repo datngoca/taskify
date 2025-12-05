@@ -1,19 +1,20 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import classNames from "classnames/bind";
 
 import styles from "./TaskEdit.module.scss";
-import Button from "../../common/Button";
-import Input from "../../common/Input";
-import { TaskContext } from "..";
-
+import Button from "@/components/common/Button";
+import Input from "@/components/common/Input";
+import { useTask } from "../useTask";
 const cx = classNames.bind(styles);
 
 const TaskEdit = ({ task, onCancel }) => {
-  const { handleUpdateTask } = useContext(TaskContext);
+  const { tasks, handleUpdateTask } = useTask();
   const [editedValue, setEditedValue] = useState(task.title);
 
   const handleSave = () => {
-    handleUpdateTask(task.id, { fieldName: "title", value: editedValue });
+    const editedTask = tasks.find((t) => t.id === task.id);
+    editedTask.title = editedValue;
+    handleUpdateTask(editedTask);
     onCancel();
   };
   return (

@@ -1,38 +1,40 @@
-const initialState = {
+import { AUTH_ACTIONS } from "./actionType";
+export const initialState = {
   isAuthenticated: false,
   isInitialized: false,
   user: null,
   error: null,
 };
-const AuthReducer = (state, action) => {
+
+export const authReducer = (state, action) => {
   switch (action.type) {
-    case "INITIALIZE":
+    case AUTH_ACTIONS.INITIALIZE:
       return {
         ...state,
         isAuthenticated: action.payload.isAuthenticated,
         isInitialized: true,
         user: action.payload.user,
       };
-    case "LOGIN":
+    case AUTH_ACTIONS.LOGIN:
       return {
         ...state,
         isAuthenticated: true,
         user: action.payload.user,
       };
-    case "LOGOUT":
+    case AUTH_ACTIONS.LOGOUT:
       return {
         ...state,
         isAuthenticated: false,
         user: null,
       };
-    case "REGISTER":
+    case AUTH_ACTIONS.REGISTER:
       return {
         ...state,
         isAuthenticated: true,
         user: action.payload.user,
         token: action.payload.token,
       };
-    case "ERROR":
+    case AUTH_ACTIONS.ERROR:
       return {
         ...state,
         error: action.payload.error,
@@ -41,5 +43,3 @@ const AuthReducer = (state, action) => {
       return state;
   }
 };
-export { initialState };
-export default AuthReducer;

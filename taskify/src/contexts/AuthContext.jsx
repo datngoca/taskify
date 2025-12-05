@@ -1,10 +1,10 @@
 import { createContext, useReducer } from "react";
 
-import AuthReducer, { initialState } from "./AuthReducer";
-import authService from "../services/authService";
+import { authReducer, initialState } from "./authReducer";
+import authService from "@/services/authService";
 const AuthContext = createContext(initialState);
 const AuthProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(AuthReducer, initialState);
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
   const initialize = (isAuthenticated, user) => {
     dispatch({

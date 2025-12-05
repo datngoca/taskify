@@ -22,6 +22,8 @@ axiosPrivate.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+let isRefreshing = false;
+let refreshPromise = null;
 
 // 2. Response Interceptor: Tự động Refresh Token khi gặp lỗi 401
 axiosPrivate.interceptors.response.use(
@@ -31,7 +33,15 @@ axiosPrivate.interceptors.response.use(
 
     // Nếu lỗi 401 và chưa từng thử lại
     if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+            // Nếu đang refresh, thì đợi cái promise kia xong rồi dùng token mới
+            return refreshPromise.then(token => {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                return axios(originalRequest);
+            });
+        }
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
         // Gọi API Refresh Token bằng axiosClient (public)
@@ -51,7 +61,7 @@ axiosPrivate.interceptors.response.use(
         // Nếu Refresh Token cũng lỗi (Hết hạn hẳn) -> Logout bắt buộc
         console.error("Phiên đăng nhập hết hạn.");
         localStorage.removeItem("token");
-
+        alert(refreshError);
         // Chuyển hướng về trang login
         window.location.href = "/login";
 

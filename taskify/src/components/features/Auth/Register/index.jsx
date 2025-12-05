@@ -1,39 +1,39 @@
 import { useState } from "react";
 import classNames from "classnames/bind";
-import styles from "./AuthForm.module.scss";
+import styles from "./Register.module.scss";
 
-import Input from "../../common/Input";
-import Button from "../../common/Button";
-import { useAuth } from "../../../hooks/useAuth.jsx";
-import { useLocation, useNavigate } from "react-router-dom";
+import Input from "../../../common/Input";
+import Button from "../../../common/Button";
+import { useAuth } from "../../../../hooks/useAuth.jsx";
+import { useNavigate, Link } from "react-router-dom";
+
 const cx = classNames.bind(styles);
-const Login = () => {
-  const { login, register, error } = useAuth();
-  const [isLogin, setIsLogin] = useState(true);
+
+/**
+ * @component Register
+ * @description A form for user registration.
+ * @returns {JSX.Element} The Register component.
+ */
+const Register = () => {
+  const { register, error } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (isLogin) {
-        await login(username, password);
-        navigate(from, { replace: true });
-      } else {
-        await register(username, password);
-      }
+      await register(username, password);
+      // Optional: navigate to login after successful registration
+      navigate('/login');
     } catch (err) {
-      console.error("Error during authentication:", err);
+      console.error("Error during registration:", err);
     }
   };
+
   return (
     <div className={cx("authContainer")}>
-      <h2 className={cx("title")}>
-        {isLogin ? "Welcome Back" : "Create Account"}
-      </h2>
+      <h2 className={cx("title")}>Create Account</h2>
 
       {error && <div className={cx("error")}>{error}</div>}
 
@@ -53,7 +53,7 @@ const Login = () => {
           <Input
             type="password"
             name={"password"}
-            autoComplete={isLogin ? "current-password" : "new-password"}
+            autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -61,22 +61,19 @@ const Login = () => {
         </div>
 
         <Button
-          onClick={handleSubmit}
           type="submit"
           primary
           style={{ width: "100%" }}
         >
-          {isLogin ? "Login" : "Sign Up"}
+          Sign Up
         </Button>
       </form>
 
       <p className={cx("toggleText")}>
-        {isLogin ? "Don't have an account?" : "Already have an account?"}
-        <span onClick={() => setIsLogin(!isLogin)}>
-          {isLogin ? "Sign Up" : "Login"}
-        </span>
+        Already have an account?
+        <Link to="/login" className={cx("link")}>Login</Link>
       </p>
     </div>
   );
 };
-export default Login;
+export default Register;

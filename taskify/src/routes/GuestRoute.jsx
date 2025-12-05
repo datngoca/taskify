@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth.jsx";
+import { useAuth } from "@/hooks/useAuth.jsx";
 const GuestRoute = () => {
   const { isAuthenticated, isInitialized } = useAuth();
   if (!isInitialized) {
