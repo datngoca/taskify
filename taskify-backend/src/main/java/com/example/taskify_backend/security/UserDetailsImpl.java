@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
 
-    private int id;
+    private Long id;
     private String username;
 
     @JsonIgnore
@@ -21,7 +21,7 @@ public class UserDetailsImpl implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     // Constructor để khởi tạo đối tượng từ Entity của bạn
-    public UserDetailsImpl(int id, String username, String password,
+    public UserDetailsImpl(Long id, String username, String password,
             Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
@@ -44,7 +44,7 @@ public class UserDetailsImpl implements UserDetails {
                 authorities);
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

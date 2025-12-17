@@ -1,8 +1,8 @@
 package com.example.taskify_backend.controller;
 
-import com.example.taskify_backend.dto.request.AddTaskRequest;
+import com.example.taskify_backend.dto.request.TaskRequest;
 import com.example.taskify_backend.dto.response.ApiResponse;
-import com.example.taskify_backend.entity.Task;
+import com.example.taskify_backend.dto.response.TaskResponse;
 import com.example.taskify_backend.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/task")
+@RequestMapping("api/v1/tasks")
 public class TaskController {
     private final TaskService taskService;
 
@@ -18,9 +18,19 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    @GetMapping("/column/{columnId}")
+    public ApiResponse<List<TaskResponse>> findAllByTaskColumnId(@PathVariable Long columnId) {
+        List<TaskResponse> tasks = taskService.getAllTaskByColumnId(columnId);
+        return ApiResponse.<List<TaskResponse>>builder()
+                .code(200)
+                .message("Get All Tasks Success")
+                .result(tasks)
+                .build();
+    }
+
     @GetMapping
-    public ApiResponse<List<Task>> findAll() {
-        return ApiResponse.<List<Task>>builder()
+    public ApiResponse<List<TaskResponse>> findAll() {
+        return ApiResponse.<List<TaskResponse>>builder()
                 .code(200)
                 .message("Get All Tasks Success")
                 .result(taskService.getAllUserTasks())
@@ -28,8 +38,8 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<Task> findTaskById(@PathVariable Integer id) {
-        return ApiResponse.<Task>builder()
+    public ApiResponse<TaskResponse> findTaskById(@PathVariable Long id) {
+        return ApiResponse.<TaskResponse>builder()
                 .code(200)
                 .message("Get Task by id: " + id + " Success")
                 .result(taskService.getTaskById(id))
@@ -37,7 +47,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<String> deleteTaskById(@PathVariable Integer id) {
+    public ApiResponse<String> deleteTaskById(@PathVariable Long id) {
         taskService.deleteTaskById(id);
         return ApiResponse.<String>builder()
                 .code(200)
@@ -47,17 +57,17 @@ public class TaskController {
     }
 
     @PostMapping
-    public ApiResponse<Task> addTask(@RequestBody @Valid AddTaskRequest task) {
-        return ApiResponse.<Task>builder()
+    public ApiResponse<TaskResponse> addTask(@RequestBody @Valid TaskRequest task) {
+        return ApiResponse.<TaskResponse>builder()
                 .code(201)
                 .message("Add Task Success")
-                .result(taskService.addTask(task))
+                .result(taskService.createTask(task))
                 .build();
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<Task> updateTask(@RequestBody @Valid AddTaskRequest task, @PathVariable Integer id) {
-        return ApiResponse.<Task>builder()
+    public ApiResponse<TaskResponse> updateTask(@RequestBody @Valid TaskRequest task, @PathVariable Long id) {
+        return ApiResponse.<TaskResponse>builder()
                 .code(200)
                 .message("Update Task by id: " + id + " Success")
                 .result(taskService.updateTaskById(id, task))
