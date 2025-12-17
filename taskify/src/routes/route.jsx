@@ -1,18 +1,16 @@
+import { LoginPage, RegisterPage } from "@/features/auth";
+import { BoardPage, BoardDetailPage } from "@/features/board";
 import Home from "@/pages/Home/Home.jsx";
-import Login from "@/pages/Auth/Login.jsx";
-import Register from "@/pages/Auth/Register.jsx"; // Import Register component
 import NotFoundPage from "@/pages/NotFound/NotFoundPage.jsx";
-import BoardsPage from "@/pages/Boards";
-import BoardPage from "@/pages/Board";
 
 const publicRoutes = [
   {
     path: "/login",
-    component: Login,
+    component: LoginPage,
   },
   {
     path: "/register", // Add Register route
-    component: Register,
+    component: RegisterPage,
   },
   {
     path: "*",
@@ -26,11 +24,12 @@ const privateRoutes = [
   },
   {
     path: "/boards",
-    component: BoardsPage,
+    component: BoardPage,
   },
+
   {
     path: "/board/:id",
-    component: BoardPage,
+    component: BoardDetailPage,
   },
 ];
 export { publicRoutes, privateRoutes };

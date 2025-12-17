@@ -1,0 +1,14 @@
+.container {
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+  .header {
+    flex-shrink: 0;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+}

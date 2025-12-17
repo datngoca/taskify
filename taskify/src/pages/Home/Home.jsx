@@ -1,5 +1,4 @@
-import Header from "@/components/features/Header";
-import ToaskBoard from "@/components/features/TaskBoard";
+import Header from "@/components/Header";
 
 const Home = () => {
   return (

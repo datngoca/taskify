@@ -1,5 +1,5 @@
 import MainLayout from "@/layouts/MainLayout";
-import Boards from "@/components/features/Boards";
+import Boards from "@/features/Boards";
 const BoardsPage = () => {
   return (
     <div>

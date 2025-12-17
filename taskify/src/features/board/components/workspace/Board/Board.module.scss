@@ -1,0 +1,26 @@
+.containerBoard {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  flex-shrink: 0;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  background-color: #0079bf; // Màu xanh Trello
+  overflow-y: hidden;
+  overflow: hidden;
+  overflow-x: auto;
+  padding: 16px;
+
+  &::-webkit-scrollbar {
+    height: 12px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+  }
+}

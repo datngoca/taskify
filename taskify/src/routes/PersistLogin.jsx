@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
-import { useAuth } from "@/hooks/useAuth";
-import authService from "@/services/authService";
+import { useAuth } from "@/features/auth";
+import {authApi} from "@/features/auth/api";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -19,7 +19,7 @@ const PersistLogin = () => {
         if (token) {
           // Gọi API lấy info user.
           // Nếu token hết hạn, axiosClient bên kia sẽ TỰ ĐỘNG refresh.
-          const user = await authService.getCurrentUser();
+          const user = await authApi.getCurrentUser();
           initialize(true, user);
         } else {
           initialize(false, null);

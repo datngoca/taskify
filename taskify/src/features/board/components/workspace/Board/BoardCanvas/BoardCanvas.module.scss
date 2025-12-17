@@ -1,0 +1,40 @@
+.boardContent {
+  display: flex;
+  align-items: flex-start; // Căn cột lên trên cùng
+  height: 100%;
+}
+
+.addColumnBtn {
+  min-width: 280px;
+  background: rgba(255, 255, 255, 0.24);
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.32);
+  }
+}
+
+.addColumnArea {
+  width: 272px;
+  background-color: #000;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.actions {
+  margin-top: 8px;
+  display: flex;
+}
+
+.cancelBtn {
+  margin-left: 8px;
+  background-color: transparent;
+  color: #ccc;
+  border: none;
+  font-size: 20px;
+  padding: 4px;
+  cursor: pointer;
+}

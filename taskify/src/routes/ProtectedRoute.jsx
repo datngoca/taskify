@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth.jsx";
+import { useAuth } from "@/features/auth";
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, isInitialized } = useAuth();
   if (!isInitialized) {
-    return <div className="loading-spinner">Loading...</div>;
+    return <div className="loading-spinner">Loading bao ve</div>;
   }
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };

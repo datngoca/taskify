@@ -1,0 +1,78 @@
+.column {
+  min-width: 280px;
+  max-width: 280px;
+  background-color: #ebecf0;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  margin-right: 16px; // Khoảng cách giữa các cột
+}
+
+.header {
+  padding: 12px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  cursor: grab; // Header là tay cầm để kéo cột
+}
+
+.taskList {
+  flex: 1;
+  padding: 0 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 10px; // Để vẫn thả được khi rỗng
+
+  /* Custom Scrollbar */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #c1c7d0;
+    border-radius: 4px;
+  }
+}
+
+.footer {
+  padding: 12px;
+  
+  button {
+    width: 100%;
+    text-align: left;
+    padding: 6px;
+    background: transparent;
+    border-radius: 4px;
+    color: #5e6c84;
+    &:hover { background-color: rgba(9,30,66,.08); }
+  }
+}
+
+.isDragging {
+  opacity: 0.5;
+  border: 2px dashed #091e42;
+  background-color: #fff;
+}
+
+.addTaskArea{
+  width: 272px;
+  background-color: #000;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.actions{
+  margin-top: 8px;
+  display: flex;
+}
+
+.cancelBtn{
+  margin-left: 8px;
+  background-color: transparent;
+  color: #ccc;
+  border: none;
+  font-size: 20px;
+  padding: 4px;
+  cursor: pointer;
+}
+

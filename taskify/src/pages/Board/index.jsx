@@ -1,5 +1,5 @@
 import HeaderOnly from "@/layouts/HeaderOnly";
-import TaskBoard from "@/components/features/TaskBoard";
+import TaskBoard from "@/features/TaskBoard";
 
 const BoardPage = () => {
   return (
