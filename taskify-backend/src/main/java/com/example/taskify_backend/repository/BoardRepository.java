@@ -1,8 +1,5 @@
 package com.example.taskify_backend.repository;
 
-import com.example.taskify_backend.entity.Task;
-import com.example.taskify_backend.entity.User;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -10,19 +7,19 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.example.taskify_backend.entity.Board;
+import com.example.taskify_backend.entity.User;
+
 @Repository
-public interface TaskRepository extends JpaRepository<Task, Long> {
+public interface BoardRepository extends JpaRepository<Board, Long> {
     // 1. Cho chức năng Update/Delete/GetDetail
     // Tìm Task theo ID NHƯNG phải thuộc về User cụ thể
     // Nếu Task tồn tại mà của User khác -> Trả về Empty
     @EntityGraph(attributePaths = "user")
-    List<Task> findAllByColumnIdAndUser(Long id, User user);
-
-    @EntityGraph(attributePaths = "user")
-    Optional<Task> findByIdAndUser(Long id, User user);
+    Optional<Board> findByIdAndUser(Long id, User user);
 
     // 2. Cho chức năng Get All
     // Lấy tất cả task của user đó
     @EntityGraph(attributePaths = "user")
-    List<Task> findAllByUser(User user);
+    List<Board> findAllByUser(User user);
 }

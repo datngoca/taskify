@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.example.taskify_backend.entity.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
     Boolean existsByUsername(String username);

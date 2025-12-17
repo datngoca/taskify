@@ -8,11 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+public class User extends BaseEntity{
     @Column(nullable = false, unique = true)
     private String username;
 

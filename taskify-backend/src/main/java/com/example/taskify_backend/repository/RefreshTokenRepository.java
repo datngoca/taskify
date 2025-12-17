@@ -9,13 +9,13 @@ import com.example.taskify_backend.entity.User;
 
 import jakarta.transaction.Transactional;
 
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Integer> {
+public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
     Optional<RefreshToken> findByToken(String token);
 
-    Optional<RefreshToken> findByUserId(int userId);
+    Optional<RefreshToken> findByUserId(Long userId);
 
     @Transactional
-    void deleteByUserId(int userId);
+    void deleteByUserId(Long userId);
 
     void deleteByUser(User user);
 
