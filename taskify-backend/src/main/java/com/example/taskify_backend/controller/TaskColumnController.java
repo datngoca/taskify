@@ -1,5 +1,6 @@
 package com.example.taskify_backend.controller;
 
+import com.example.taskify_backend.dto.request.MoveCardDifferentColumnRequest;
 import com.example.taskify_backend.dto.request.TaskColumnRequest;
 import com.example.taskify_backend.dto.response.ApiResponse;
 import com.example.taskify_backend.dto.response.TaskColumnResponse;
@@ -36,6 +37,14 @@ public class TaskColumnController {
     @PutMapping("/{id}/task_order")
     public ApiResponse<TaskColumnResponse> moveTask(@PathVariable Long id, @RequestBody List<String> cardOrderIds) {
         TaskColumnResponse taskColumn = taskColumnService.moveTask(id, cardOrderIds);
+        return ApiResponse.<TaskColumnResponse>builder()
+                .result(taskColumn)
+                .build();
+    }
+
+    @PutMapping("/moving_task")
+       public ApiResponse<TaskColumnResponse> moveCardToDifferentColumn(@RequestBody MoveCardDifferentColumnRequest data) {
+        TaskColumnResponse taskColumn = taskColumnService.moveTaskToDifferentColumn(data);
         return ApiResponse.<TaskColumnResponse>builder()
                 .result(taskColumn)
                 .build();

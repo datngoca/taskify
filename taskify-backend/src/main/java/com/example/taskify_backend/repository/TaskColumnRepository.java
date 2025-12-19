@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +20,13 @@ public interface TaskColumnRepository extends JpaRepository<TaskColumn, Long> {
     Optional<TaskColumn> findByIdAndBoardIdAndUser(Long id, Long boardId, User user);
 
     @EntityGraph(attributePaths = "user")
-    Optional<TaskColumn> findByIdAndUser(Long id, User user);    
+    Optional<TaskColumn> findByIdAndUser(Long id, User user);
 
     // 2. Cho chức năng Get All
     // Lấy tất cả task của user đó
     @EntityGraph(attributePaths = "user")
     List<TaskColumn> findAllByBoardIdAndUser(Long boardId, User user);
+
+    List<TaskColumn> findByUserAndIdIn(User user, Collection<Long> ids);
 
 }
