@@ -207,7 +207,49 @@ const BoardDataProvider = ({ children, boardId }) => {
         payload: nextColumns, // Gửi mảng columns đã tính toán xong
       });
 
-      // (Optional) Gọi API save to DB tại đây...
+   // 2. Gọi API xử lý ngầm
+      // Chúng ta cần biến activeColumn và overColumn (của state CŨ) và nextColumns (state MỚI)
+      // để lấy dữ liệu gửi lên Server.
+
+      if (activeColumn.id !== overColumn.id) {
+        // === TRƯỜNG HỢP 1: KÉO SANG CỘT KHÁC ===
+        
+        // Tìm lại cột cũ và cột mới trong mảng nextColumns (state mới) để lấy cardOrderIds mới nhất
+        const newPrevColumn = nextColumns.find(c => c.id === activeColumn.id);
+        const newNextColumn = nextColumns.find(c => c.id === overColumn.id);
+        
+        // Gọi API
+        await taskColumnApi.moveCardToDifferentColumn({
+            currentCardId: activeId,
+            prevColumnId: activeColumn.id,
+            prevCardOrderIds: newPrevColumn.cardOrderIds, // Mảng order ID mới của cột cũ (đã mất card)
+            nextColumnId: overColumn.id,
+            nextCardOrderIds: newNextColumn.cardOrderIds  // Mảng order ID mới của cột mới (đã thêm card)
+        }).catch(() => {
+            // Xử lý lỗi: Rollback state hoặc hiện thông báo
+            // dispatch({ type: 'ROLLBACK_STATE', payload: state.columns });
+            console.error("Lỗi khi move card sang cột khác");
+        });
+
+      } else {
+        // === TRƯỜNG HỢP 2: KÉO TRONG CÙNG CỘT ===
+        
+        // Chỉ gọi API khi vị trí thực sự thay đổi
+        const oldIndex = activeColumn.tasks.findIndex((c) => c.id === activeId);
+        const newIndex = overColumn.tasks.findIndex((c) => c.id === overId);
+        
+        if (oldIndex !== newIndex) {
+            // Lấy cột đã được update trong nextColumns
+            const updatedColumn = nextColumns.find(c => c.id === activeColumn.id);
+
+            // Gọi API
+            await taskColumnApi.updateColumnCardOrder(updatedColumn.id, updatedColumn.cardOrderIds)
+            .catch(() => {
+                console.error("Lỗi khi reorder card");
+            });
+        }
+      }
+
     },
     [state.columns, dispatch]
   );

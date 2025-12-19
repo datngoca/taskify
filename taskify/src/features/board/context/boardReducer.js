@@ -68,12 +68,13 @@ const boardReducer = (state, action) => {
     }
 
     case BOARD_ACTIONS.MOVE_TASK: {
+      const nextColumns = action.payload;
       return {
         ...state,
-        columns: action.payload,
+        columns: nextColumns,
         board: {
           ...state.board,
-          columns: action.payload,
+          columns: nextColumns,
         },
       };
     }

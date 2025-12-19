@@ -72,6 +72,7 @@ const BoardCanvas = () => {
       // Logic moveCard (task) thường phức tạp hơn (xử lý ở DragOver hoặc DragEnd)
       // Tạm thời gọi hàm moveCard giả định
       else if (type === "TASK") {
+        console.log("over", over);
         if (active.id !== over.id) moveCards({ active, over });
       }
 
